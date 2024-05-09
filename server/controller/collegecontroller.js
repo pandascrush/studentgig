@@ -13,4 +13,16 @@ const GetCollegeDetail = async(req,res)=>{
     })
 }
 
-export {GetCollegeDetail}
+const Skills = async(req,res) => {
+    let getSkills = 'select * from skills'
+    db.query(getSkills,(err,result)=>{
+        if(err){
+            res.json({status:false,msg:"error"})
+        }
+        else{
+            res.json({status:true,msg:result})
+        }
+    })
+}
+
+export {GetCollegeDetail,Skills}

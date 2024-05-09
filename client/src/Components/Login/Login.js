@@ -25,6 +25,7 @@ export function Login() {
             var role=res.data.role;
             // alert(role)
             var id=res.data.id;
+            let name = res.data.name
 
             // alert(id)
             if(role===1){

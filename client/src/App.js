@@ -5,6 +5,7 @@ import { Studentdashboard } from "./Components/Dashboard/student_dashboard/Stude
 import MaybeShowNavBar from "./MayBeShowTheNavBar/MayBeShowTheNavBar";
 import { Profile } from "./Components/Dashboard/student_dashboard/Profile";
 import SideNavBar from "./Components/Dashboard/student_dashboard/SideNavBar";
+import ProfileUpdate from "./Components/Dashboard/student_dashboard/ProfileUpdate";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/reg" Component={Registration} />
           <Route path="/student/:id" Component={Studentdashboard} />
           {/* <Route path="/profile" Component={Profile} /> */}
+          <Route path="/update/:id" Component={ProfileUpdate} />
         </Routes>
       </BrowserRouter>
     </>

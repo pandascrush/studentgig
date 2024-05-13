@@ -1,12 +1,14 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import img from "../../Assets/Group 289210.png";
 import axios from "axios";
 
 function ProfileUpdate() {
   const { id } = useParams();
+
+  const nav = useNavigate()
 
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
@@ -19,14 +21,14 @@ function ProfileUpdate() {
   useEffect(() => {
     axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
       // console.log(res.data.msg[0].name)
-      let result = res.data.msg[0]
+      let result = res.data.msg[0];
       setName(result.name);
-      setEmail(result.email)
-      setPassword(result.password)
-      setDegree(result.degree)
-      setYear(result.year)
-      setSpl(result.specialization)
-      setColl(result.college_id)
+      setEmail(result.email);
+      setPassword(result.password);
+      setDegree(result.degree);
+      setYear(result.year);
+      setSpl(result.specialization);
+      setColl(result.college_id);
     });
   }, []);
 
@@ -39,11 +41,39 @@ function ProfileUpdate() {
       });
   }, []);
 
+  const [file1, setFile1] = useState(null);
+  // console.log(selectedFile);
+  const handleFile1Change = (e) => {
+    setFile1(e.target.files[0]);
+  };
+
   function handleSubmit(e) {
     e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append("Name", Name);
+    formData.append("Email", Email);
+    formData.append("Password", Password);
+    formData.append("Degree", Degree);
+    formData.append("Year", Year);
+    formData.append("Spl", Spl);
+    formData.append("coll", coll);
+    formData.append("id", id);
+    formData.append("file", file1);
 
-    axios.put('http://localhost:5000/stu/update',{Name,Email,Password,Degree,Year,Spl,coll,id})
-    .then(res => console.log(res))
+    try {
+      axios
+        .put("http://localhost:5000/stu/update", formData)
+        .then((res) => {
+          console.log(res)
+          if(res.data.status){
+            alert("updated")
+            nav(`/profile/${id}`)
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (
@@ -139,6 +169,15 @@ function ProfileUpdate() {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div>
+                  <label>Profile Picture :</label>
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,"
+                    name="file1"
+                    onChange={handleFile1Change}
+                  />
                 </div>
                 <button
                   type="submit"

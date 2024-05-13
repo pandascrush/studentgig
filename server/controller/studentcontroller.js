@@ -62,29 +62,22 @@ const GetSingleStudentData = async (req, res) => {
 
 const profileUpdation = async (req, res) => {
   const { id, git, des, url, skill } = req.body;
+  
+  const file = req.file
 
-  const files = req.files;
-
-  if (!files) {
+  if (!file) {
     return res.status(400).send("No files were uploaded.");
   }
 
-  // Insert file metadata into the database
-  const file1 = files["file1"][0];
-  const file2 = files["file2"][0];
-
   // Retrieve file metadata
-  const file1Filename = file1.originalname;
-  const file1Path = file1.path;
-  const file2Filename = file2.originalname;
-  const file2Path = file2.path;
+  const file1Filename = file.originalname;
+  const file1Path = file.path;
 
-  // Insert file metadata into the database
-  // const sql = `update students SET profile_photo = ${file1Filename}, github_link = ${git} , resume_file = ${file2Filename} where student_id = ${id}`;
+  
   try {
     const sql =
-      "update students set profile_photo=?,github_link=?,resume_file=? where student_id=?";
-    db.query(sql, [file1Path, git, file2Path, id], (err, result) => {
+      "update students set github_link=?,resume_file=? where student_id=?";
+    db.query(sql, [git, file1Path, id], (err, result) => {
       if (err) {
         console.error("Error inserting files into database: ", err);
         res.status(500).send("Internal server error");
@@ -111,12 +104,17 @@ const profileUpdation = async (req, res) => {
  
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;
+  
+  const file = req.file
+
+  const Filename = file.filename
+  const Pathname = file.path
 
   let sql =
-    "update students set name=?,email=?,password=?,degree=?,year=?,specialization=?,college_id=? where student_id=?";
+    "update students set name=?,email=?,password=?,degree=?,year=?,specialization=?,college_id=?, profile_photo=? where student_id=?";
   db.query(
     sql,
-    [Name, Email, Password, Degree, Year, Spl, coll, id],
+    [Name, Email, Password, Degree, Year, Spl, coll,Filename,id],
     (err, result) => {
       if (err) {
         console.log("error", err);
@@ -130,7 +128,7 @@ const updateUserData = async (req, res) => {
 
 const getSingleProfile = async(req,res)=>{
   const {id} =req.params
-  console.log(id);
+  // console.log(id);
   
   let sql = 'select * from students where student_id = ?'
   db.query(sql,[id],(err,result)=>{
@@ -150,13 +148,6 @@ const getSingleProfile = async(req,res)=>{
 }
 
 
-const getProfile = async(req,res) =>{
-  const filename = req.params.filename;
-
-  const __dirname = path.resolve()
-  
-  res.sendFile(path.join(__dirname, 'public', 'images', filename));
-}
 
 const Verify = async(req,res)=>{
   res.json({status:true,msg:"authorized"})
@@ -170,7 +161,6 @@ const Logout = async(req,res) =>{
 export {
   Logout,
   Verify,
-  getProfile,
   getSingleProfile,
   updateUserData,
   StudentRegistration,

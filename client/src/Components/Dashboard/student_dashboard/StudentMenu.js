@@ -11,7 +11,7 @@ export function StudentMenu() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    axios.get("http://localhost:8000/stu/logout").then((res) => {
+    axios.get("http://localhost:5000/stu/logout").then((res) => {
       if (res.data.status) {
         navigate("/");
       }
@@ -77,7 +77,7 @@ export function StudentMenu() {
             <div class="collapse navbar-collapse" id="sidebarCollapse">
               {/* <!-- Navigation --> */}
               <ul class="navbar-nav">
-                <Link to={`/bussinessdashboard/${id}`}>
+                <Link to={`/student/${id}`}>
                   <li class="nav-item">
                     <a class="nav-link" href="#">
                       <i class="bi bi-house"></i> Dashboard

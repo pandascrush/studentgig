@@ -4,17 +4,18 @@ import "./Studentmenu.css";
 import { Link, useParams } from "react-router-dom";
 import logo from "../../Assets/KGGL.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export function StudentMenu() {
   var { id } = useParams();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear cache or perform any necessary cleanup
-    localStorage.removeItem("authToken"); // Example: Clear authentication token from local storage
-
-    // Redirect to login page
-    navigate("/login", { replace: true }); // Replace the current route with the login route
+    axios.get("http://localhost:8000/stu/logout").then((res) => {
+      if (res.data.status) {
+        navigate("/");
+      }
+    });
   };
   return (
     <>

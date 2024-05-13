@@ -1,11 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faL, faXmark } from "@fortawesome/free-solid-svg-icons";
 import loginimage from "../Assets/Group 289210.png";
 // import kglogo from '../Assest/logo.png'
 import axios from "axios";
 export function Login() {
+
+  const nav = useNavigate()
+
   const handlelogin = (event) => {
     event.preventDefault();
     var email = document.getElementById("email").value;
@@ -29,16 +32,16 @@ export function Login() {
 
             // alert(id)
             if(role===1){
-                window.location.href=`/student/${id}`
+                nav(`/student/${id}`)
             }
             else if(role===2){
-                window.location.href=`/manager/${id}`
+                nav(`/manager/${id}`)
             }
             else if(role===3){
-                window.location.href=`/bdm/${id}`
+                nav(`/bdm/${id}`)
             }
             else if(role===4){
-                window.location.href=`/bde/${id}`
+                nav(`/bde/${id}`)
             }
         }
         else if(res.data.status==="invalid_user"){

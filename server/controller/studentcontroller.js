@@ -1,5 +1,6 @@
 import db from "../config/db.js";
 import path from 'path'
+import jwt from 'jsonwebtoken'
 
 const StudentRegistration = async (req, res) => {
   let { name, email, password, degree, year, specialization, college } =
@@ -34,6 +35,8 @@ const StudentLogin = async (req, res) => {
       let name = result[0].name;
 
       if (dbpassword === password) {
+        const token = jwt.sign({user:id},"secretkey",{expiresIn:"2m"})
+        res.cookie("accessToken",token,{secure:true,sameSite:true,httpOnly:true})
         res.json({ status: "user", id: id, role: role, name: name });
       } else {
         res.json({ msg: "invalid_password" });
@@ -127,17 +130,15 @@ const updateUserData = async (req, res) => {
 
 const getSingleProfile = async(req,res)=>{
   const {id} =req.params
-  
   console.log(id);
   
-
   let sql = 'select * from students where student_id = ?'
   db.query(sql,[id],(err,result)=>{
     if(err){
       console.log("error");
     }
     else{
-      var photo=result[0].profile_photo 
+      var photo = result[0].profile_photo 
       console.log(photo);
       
       const __dirname = path.resolve()
@@ -157,7 +158,18 @@ const getProfile = async(req,res) =>{
   res.sendFile(path.join(__dirname, 'public', 'images', filename));
 }
 
+const Verify = async(req,res)=>{
+  res.json({status:true,msg:"authorized"})
+}
+
+const Logout = async(req,res) =>{
+  res.clearCookie('accessToken')
+  res.json({status:true,msg:"logout"})
+}
+
 export {
+  Logout,
+  Verify,
   getProfile,
   getSingleProfile,
   updateUserData,

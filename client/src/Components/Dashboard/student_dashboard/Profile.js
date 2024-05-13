@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import filetransfer from "../../Assets/Animation - 1715065850571.gif";
 
 function Profile() {
   const { id } = useParams();
+  const nav = useNavigate();
 
   const [selectedSkill, setSelectedSkill] = useState("");
   const [skills, setSKills] = useState([]);
@@ -14,6 +15,18 @@ function Profile() {
   const handleChange = (event) => {
     setSelectedSkill(event.target.value);
   };
+
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    axios.get("http://localhost:5000/verify/auth").then((res) => {
+      if (res.data.status) {
+        console.log("token is alive");
+        // nav('/read')
+      } else {
+        nav("/");
+      }
+    });
+  });
 
   useEffect(() => {
     axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
@@ -105,7 +118,12 @@ function Profile() {
           <div className=" col-lg-6 col-sm-12">
             <div>
               <label>Profile Picture :</label>
-              <input type="file" accept=".jpg,.jpeg,.png," name="file1" onChange={handleFile1Change} />
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png,"
+                name="file1"
+                onChange={handleFile1Change}
+              />
             </div>
             <h3>Skillset</h3>
 
@@ -180,50 +198,6 @@ function Profile() {
                 />
               </div>
             </div>
-
-            {/* <div
-              onDrop={handleDrop}
-              onDragOver={(e) => e.preventDefault()}
-              style={{
-                border: "2px dashed #ccc",
-                height: "200px",
-                width: "400px",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                marginBottom: "20px",
-              }}
-            >
-              <label
-                htmlFor="fileInput"
-                style={{
-                  cursor: "pointer",
-                  display: "inline-block",
-                  padding: "10px 20px",
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  backgroundColor: "#E49B0F",
-                  color: "#333",
-                }}
-              >
-                <strong>Browse</strong>
-              </label>
-              <input
-                type="file"
-                id="fileInput"
-                multiple
-                accept="image/*"
-                onChange={handleFileSelect}
-                style={{ display: "none" }}
-              />
-              <img src={filetransfer} className="ms-5 col-lg-6"/>
-              <br />
-              <ul>
-                {files.map((file, index) => (
-                  <li key={index}>{file.name}</li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         </div>
         <button type="submit" className="btn btn-success float-end me-5">

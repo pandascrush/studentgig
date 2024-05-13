@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 function SideNavBar() {
   return (
-    <div className='col-lg-4'>
+    <div className='col-lg-2 bg-danger'>
         <ul>
             <li>
                 <Link to={'/profile'}>Profile</Link><br></br>

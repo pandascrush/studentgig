@@ -11,6 +11,7 @@ export default function Profile() {
   const { id } = useParams();
 
   const [image,setImage] = useState()
+
   useEffect(()=>{
     axios.get(`http://localhost:5000/stu/getall/${id}`)
     .then(res => {
@@ -100,7 +101,7 @@ export default function Profile() {
       <div className="background"></div>
       <div className="imgposition ms-5">
         <img
-          src={`http://localhost:5000/images/${image}`}
+          src={ image ? `http://localhost:5000/images/${image}` : `${backgroundimg}`}
           className="portfolioimg"
           alt="Load"
         />

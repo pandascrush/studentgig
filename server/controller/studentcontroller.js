@@ -1,6 +1,6 @@
 import db from "../config/db.js";
-import path from 'path'
-import jwt from 'jsonwebtoken'
+import path from "path";
+import jwt from "jsonwebtoken";
 
 const StudentRegistration = async (req, res) => {
   let { name, email, password, degree, year, specialization, college } =
@@ -35,8 +35,12 @@ const StudentLogin = async (req, res) => {
       let name = result[0].name;
 
       if (dbpassword === password) {
-        const token = jwt.sign({user:id},"secretkey",{expiresIn:"2m"})
-        res.cookie("accessToken",token,{secure:true,sameSite:true,httpOnly:true})
+        const token = jwt.sign({ user: id },"secretkey",{ expiresIn: "2m" }); 
+        res.cookie("accessToken", token, {
+          secure: true,
+          sameSite: true,
+          httpOnly: true,
+        });
         res.json({ status: "user", id: id, role: role, name: name });
       } else {
         res.json({ msg: "invalid_password" });
@@ -62,8 +66,8 @@ const GetSingleStudentData = async (req, res) => {
 
 const profileUpdation = async (req, res) => {
   const { id, git, des, url, skill } = req.body;
-  
-  const file = req.file
+
+  const file = req.file;
 
   if (!file) {
     return res.status(400).send("No files were uploaded.");
@@ -73,7 +77,6 @@ const profileUpdation = async (req, res) => {
   const file1Filename = file.originalname;
   const file1Path = file.path;
 
-  
   try {
     const sql =
       "update students set github_link=?,resume_file=? where student_id=?";
@@ -81,8 +84,7 @@ const profileUpdation = async (req, res) => {
       if (err) {
         console.error("Error inserting files into database: ", err);
         res.status(500).send("Internal server error");
-      }
-       else {
+      } else {
         let sql =
           "insert into student_skills(student_id,skill_id,skill_url,skill_description)values(?,?,?,?)";
         db.query(sql, [id, skill, url, des], (error, result) => {
@@ -101,20 +103,21 @@ const profileUpdation = async (req, res) => {
     res.json({ msg: "db_error" });
   }
 };
- 
+
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;
-  
-  const file = req.file
 
-  const Filename = file.filename
-  const Pathname = file.path
+  const file = req.file;
+  console.log(file);
+
+  const Filename = file.filename;
+  const Pathname = file.path;
 
   let sql =
     "update students set name=?,email=?,password=?,degree=?,year=?,specialization=?,college_id=?, profile_photo=? where student_id=?";
   db.query(
     sql,
-    [Name, Email, Password, Degree, Year, Spl, coll,Filename,id],
+    [Name, Email, Password, Degree, Year, Spl, coll, Filename, id],
     (err, result) => {
       if (err) {
         console.log("error", err);
@@ -126,37 +129,35 @@ const updateUserData = async (req, res) => {
   );
 };
 
-const getSingleProfile = async(req,res)=>{
-  const {id} =req.params
+const getSingleProfile = async (req, res) => {
+  const { id } = req.params;
   // console.log(id);
-  
-  let sql = 'select * from students where student_id = ?'
-  db.query(sql,[id],(err,result)=>{
-    if(err){
+
+  let sql = "select * from students where student_id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
       console.log("error");
-    }
-    else{
-      var photo = result[0].profile_photo 
+    } else {
+      var photo = result[0].profile_photo;
+      photo = "hiii";
       console.log(photo);
-      
-      const __dirname = path.resolve()
+
+      const __dirname = path.resolve();
       // res.sendFile(path.join(__dirname, photo));
-      let img = path.join(__dirname, photo)
-      res.send({result,img})
+      let img = path.join(__dirname, photo);
+      res.send({ result, img });
     }
-  })
-}
+  });
+};
 
+const Verify = async (req, res) => {
+  res.json({ status: true, msg: "authorized" });
+};
 
-
-const Verify = async(req,res)=>{
-  res.json({status:true,msg:"authorized"})
-}
-
-const Logout = async(req,res) =>{
-  res.clearCookie('accessToken')
-  res.json({status:true,msg:"logout"})
-}
+const Logout = async (req, res) => {
+  res.clearCookie("accessToken");
+  res.json({ status: true, msg: "logout" });
+};
 
 export {
   Logout,

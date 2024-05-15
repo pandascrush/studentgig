@@ -1,0 +1,38 @@
+/* .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .main-content h1 {
+    font-size: 24px;
+    color: #333;
+  }
+   */
+
+  
+   .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .toggle-sidebar-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .toggle-sidebar-button:hover {
+    background-color: #f0f0f0;
+  }
+  .wholecard{
+    box-shadow: 5px 5px 90px 2px gray;
+    border-radius: 30px;
+  }
+  .highlight{
+    font-weight: 900;
+  }

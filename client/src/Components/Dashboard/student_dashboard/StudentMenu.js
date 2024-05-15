@@ -10,6 +10,7 @@ export function StudentMenu() {
   var { id } = useParams();
   const navigate = useNavigate();
 
+  axios.defaults.withCredentials=true
   const handleLogout = () => {
     axios.get("http://localhost:5000/stu/logout").then((res) => {
       if (res.data.status) {

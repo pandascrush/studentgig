@@ -35,12 +35,8 @@ const StudentLogin = async (req, res) => {
       let name = result[0].name;
 
       if (dbpassword === password) {
-        const token = jwt.sign({ user: id },"secretkey",{ expiresIn: "2m" }); 
-        res.cookie("accessToken", token, {
-          secure: true,
-          sameSite: true,
-          httpOnly: true,
-        });
+        const token = jwt.sign({ user: id },"secretkey",{ expiresIn: "1d" }); 
+        res.cookie("accessToken", token, {httpOnly: true});
         res.json({ status: "user", id: id, role: role, name: name });
       } else {
         res.json({ msg: "invalid_password" });

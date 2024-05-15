@@ -9,6 +9,7 @@ export function Login() {
 
   const nav = useNavigate()
 
+  axios.defaults.withCredentials = true
   const handlelogin = (event) => {
     event.preventDefault();
     var email = document.getElementById("email").value;

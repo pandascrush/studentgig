@@ -1,14 +1,14 @@
 import mysql from 'mysql'
 
-const db = mysql.createPool({
-    host: "sql.freedb.tech",
+const db = mysql.createConnection({
+    host: "barpuxnjgberfpv0rrot-mysql.services.clever-cloud.com",
     port: 3306,
-    user: "freedb_studentdb",
-    password:"5AR4*FNVRhGM&K?",
-    database:"freedb_studentgig"
+    user: "uvtharvgdtjssdho",
+    password:"JkWY5xPiuH5TdGl2acui",
+    database:"barpuxnjgberfpv0rrot"
 })
 
-db.getConnection((err,res)=>{
+db.connect((err,res)=>{
     if(err) console.log("db error", err)
     else console.log("Db connected")   
 })

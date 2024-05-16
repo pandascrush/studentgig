@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import path from 'path'
+import db from './config/db.js'
 const app = express()
 import cookieParser from 'cookie-parser'
 import { studentRouter } from './routes/studentroute.js'

@@ -19,39 +19,39 @@ export function Registration() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [degree, setDegree] = useState();
+  const [skill,setSkill] = useState()
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    console.log(name,email,password,selectedCategory,selectedCollege,year,skill);
+    
+    
     // Here you can handle form submission, e.g., send form data to server
     // Reset form fields after submission
 
-    // axios.post("http://localhost:5000/stu/registration",{name,email,password,degree,selectedCategory}).then((res) => {
-    //   if (res.data.status === "inserted") {
-    //     alert("data are Registed successfully");
-    //     window.location.href = "/";
-    //   } else if (res.data.status === "error") {
-    //     alert("Already register...");
-    //   } else {
-    //     alert("data are not Registed");
-    //   }
-    // });
+    axios.post("http://localhost:5000/stu/registration",{name,email,password,selectedCategory,selectedCollege,year,skill})
+    .then((res) => {
+      if (res.data.status === "inserted") {
+        alert("data are Registed successfully");
+        window.location.href = "/";
+      } else if (res.data.status === "error") {
+        alert("Already register...");
+      } else {
+        alert("data are not Registed");
+      }
+    });
   };
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [colleges, setColleges] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState("");
   const [courses, setCourses] = useState([]);
+  const [year,setYear] = useState('')
 
   useEffect(() => {
     if (selectedCategory) {
-      // Fetch colleges based on the selected category
-      // fetch(`https://api.example.com/colleges?category=${selectedCategory}`)
-      //   .then((response) => response.json())
-      //   .then((data) => setColleges(data))
-      //   .catch((error) => console.error("Error fetching colleges:", error));
       axios
         .get(`http://localhost:5000/college/course/${selectedCategory}`)
         .then((res) => {
@@ -68,24 +68,18 @@ export function Registration() {
 
   const handleCollegeChange = (event) => {
     const collegeId = event.target.value;
-    console.log(collegeId);
     setSelectedCollege(collegeId);
 
     // Fetch courses for the selected college
     fetch(`http://localhost:5000/college/years/${collegeId}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data.result[0].years)
-        
         setCourses(data.result[0].years);
       })
       .catch((error) => console.error("Error fetching courses:", error));
   };
-
   const options = [...Array(courses).keys()].map((i) => i + 1);
-  console.log(options);
   
-
   return (
     <>
       <div className="container-fluid paddingleft">
@@ -133,15 +127,6 @@ export function Registration() {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-control-label">Degree:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="degree"
-                      onChange={(e) => setDegree(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
                     <label className="form-control-label">College:</label>
                     <select
                       name="college"
@@ -167,7 +152,6 @@ export function Registration() {
                       <option value="">--Course--</option>
                       {colleges.map((college) => (
                         <option
-                          key={college.college_id}
                           value={college.course_id}
                         >
                           {college.course_name}
@@ -180,15 +164,24 @@ export function Registration() {
                     <select
                       className="form-control"
                       disabled={!selectedCollege}
+                      onChange={e=>setYear(e.target.value)}
                     >
                       <option value="">--year--</option>
-                      {/* <option>{courses}</option> */}
                       {options.map((course) => (
                         <option>
                           {course} Year
                         </option>
                       ))}
                     </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-control-label">Skills</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="skill"
+                      onChange={(e) => setSkill(e.target.value)}
+                    />
                   </div>
                   <button
                     type="submit"

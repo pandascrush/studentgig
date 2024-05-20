@@ -4,16 +4,20 @@ import jwt from "jsonwebtoken";
 
 const StudentRegistration = async (req, res) => {
 
-  let { name, email, password, degree, year, specialization, college } =
-    req.body;
+  let { name,email,password,selectedCategory,selectedCollege,year,skill} =
+  req.body;
+
+  console.log(name,email,password,selectedCategory,selectedCollege,year,skill);
+  
+
   let registrationsql =
-    "insert into students(name,email,password,degree,year,specialization,college_id, role_id)values(?,?,?,?,?,?,?,1)";
+    "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
   db.query(
     registrationsql,
-    [name, email, password, degree, year, specialization, college],
+    [name, email, password, selectedCollege, year,skill,selectedCategory],
     (error, result) => {
       if (error) {
-        console.log("error");
+        console.log("error",error);
         res.json({ status: "error" });
       } else {
         res.json({ status: "inserted" });

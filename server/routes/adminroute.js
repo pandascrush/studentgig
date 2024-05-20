@@ -12,4 +12,5 @@ adminRouter.route("/skill").get(filterStudentSkills);
 adminRouter.route("/stucount").get(studentsCount);
 adminRouter.route('/studata').get(studentsData)
 
+
 export default adminRouter;

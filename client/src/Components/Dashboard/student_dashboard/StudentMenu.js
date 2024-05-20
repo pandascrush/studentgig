@@ -40,7 +40,7 @@ export function StudentMenu() {
 
             <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="#">
               <h3 style={{ color: "#DC3545" }}></h3>
-              <img src={logo} className="container-fluid" />
+              <img src={logo} className="col-lg-8 h-100" />
             </a>
             {/* <!-- User menu (mobile) --> */}
             <div class="navbar-user d-lg-none">

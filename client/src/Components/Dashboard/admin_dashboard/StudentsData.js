@@ -33,9 +33,9 @@ function StudentsData() {
               <td>{value.degree}</td>
               <td>{value.specialization}</td>
               <td>
-                <div className="progress-container mt-4">
-                  <div className="progress-bar">{value.year}</div>
-                </div>
+               
+                  {value.year}
+                
               </td>
             </tr>
           ))}

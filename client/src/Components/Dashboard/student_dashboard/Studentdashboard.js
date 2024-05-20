@@ -14,8 +14,9 @@ export function Studentdashboard() {
           </div>
           <div className="col-lg-10">
             <div className="row">
-              <Barchart/>
-              <Kgcas/>
+              {/* <Barchart/>
+              <Kgcas/> */}
+              <h1>Project</h1>
             </div>
           </div>
         </div>
@@ -27,12 +28,12 @@ export function Studentdashboard() {
 export function Studentprofile() {
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-lg-2">
+      <div className="container-fluid sideback">
+        <div className="row sideback">
+          <div className="col-lg-2 sideback">
             <StudentMenu />
           </div>
-          <div className="col-lg-10">
+          <div className="col-lg-10 background sideback">
             <Profile />
           </div>
         </div>

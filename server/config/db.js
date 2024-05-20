@@ -1,11 +1,11 @@
 import mysql from 'mysql'
 
 const db = mysql.createConnection({
-    host: "barpuxnjgberfpv0rrot-mysql.services.clever-cloud.com",
+    host: "localhost",
     port: 3306,
-    user: "uvtharvgdtjssdho",
-    password:"JkWY5xPiuH5TdGl2acui",
-    database:"barpuxnjgberfpv0rrot"
+    user: "root",
+    password:"greenwater",
+    database:"studentgig"
 })
 
 db.connect((err,res)=>{

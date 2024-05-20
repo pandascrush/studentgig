@@ -119,6 +119,17 @@ export function Login() {
                     </button>
                   </div>
                 </form>
+                <p className="pt-4 text-center">
+              Didn't have a Account ?{" "}
+              <Link
+                to="/reg"
+                style={{ color: "#DC3545", textDecoration: "none" }}
+              >
+                <span style={{ color: "#DC3545", textDecoration: "none" }}>
+                  register
+                </span>
+              </Link>
+            </p>
               </div>
             </div>
           </div>

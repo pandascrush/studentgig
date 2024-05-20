@@ -17,7 +17,9 @@ function Dash() {
             <AdminMenu />
           </div>
           <div className="col-lg-10">
-            <MainContent/>
+            {/* <MainContent/> */}
+            <Barchart/>
+            <Kgcas/>
           </div>
         </div>
       </div>
@@ -51,6 +53,22 @@ export function Dashstudent(){
         </div>
       </div>
     );
+}
+export function Addproject(){
+  return(
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-2">
+            <AdminMenu />
+          </div>
+          <div className="col-lg-10">
+            <Addproject/>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Dash;

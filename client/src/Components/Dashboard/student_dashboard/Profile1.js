@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import gifimg from "../../Assets/Animation - 1715065850571.gif";
-import dragim from "../../Assets/arrow.jpg";
+import dragim from "../../Assets/Group 1.png";
 import backgroundimg from "../../Assets/upper.png";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import filetransfer from "../../Assets/Animation - 1715065850571.gif";
 import "../../../App.css";
+
 
 export default function Profile() {
   const { id } = useParams();
@@ -23,6 +24,7 @@ export default function Profile() {
   const [selectedSkill, setSelectedSkill] = useState("");
   const [skills, setSKills] = useState([]);
   const [skillUrl, setSkillUrl] = useState("");
+  const [github, setGithub] = useState("");
   const [des, setDes] = useState("");
 
   const handleChange = (event) => {
@@ -32,6 +34,8 @@ export default function Profile() {
   useEffect(() => {
     axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
       setName(res.data.msg[0].name);
+      setGithub(res.data.msg[0].github_link)
+
     });
   }, [id]);
 
@@ -98,8 +102,10 @@ export default function Profile() {
   };
   return (
     <div>
-      <div className="background"></div>
-      <div className="imgposition ms-5">
+      <div className="background">
+        <h1 className="text-center text-white p-5 ">KGGL Gig</h1>
+      </div>
+      <div className="imgposition ms-5  ">
         <img
           src={ image ? `http://localhost:5000/images/${image}` : `${backgroundimg}`}
           className="portfolioimg"
@@ -107,29 +113,31 @@ export default function Profile() {
         />
       </div>
       {/* text */}
-      <div className="container">
+      <div className="container-fluid">
         <div className="row">
-          <div className="col-sm-12 col-lg-6">
-            <h1>{Name}</h1>
-            {/* <button className="btn btn-primary rounded-5 p-3 border-black my-2 me-3">Edit Profile</button> */}
+          <div className="col-sm-12 col-lg-5 ms-5">
+            <h1 className=" text-capitalize">{Name}</h1>
             <Link
               to={`/update/${id}`}
-              className="btn btn-primary rounded-5  p-3 my-2 me-2 border-black"
+              className="btn btn-primary rounded-5"
             >
               Edit Profile
             </Link>
-            <button className="btn  rounded-5  p-3 border-black my-2">
+            {/* <button className="btn btn-primary rounded-5 p-3 border-black my-2 me-3">Edit Profile</button> */}
+            {/* <button className="btn  rounded-5 ms-2 border-black my-2">
               Settings
-            </button>
+            </button> */}
 
-            <h1>Skillset</h1>
+            <h3>Skill</h3>
+            <h4>Add New Skill</h4>
+           
             <select
-              className="my-3"
+              className="my-3 border form-control"
               id="skillSelect"
               value={selectedSkill}
               onChange={handleChange}
             >
-              <option value="">Select</option>
+              <option value="">Select your Skill</option>
               {skills.map((val, ind) => {
                 return <option value={val.skill_id}>{val.skill_name}</option>;
               })}
@@ -138,53 +146,64 @@ export default function Profile() {
             <input
               onChange={(e) => setSkillUrl(e.target.value)}
               type="textarea"
-              placeholder="Paste URL"
-              className="custom-input"
+              placeholder="Paste project URL "
+              className="form-control"
+              value={skillUrl}
             />
             <br />
             <textarea
               rows="4"
               cols="30"
               placeholder="Project Description"
-              className="project_description mt-4 border-black-5 rounded-4  focus:border-black "
+              className="project_description mt-4 border-black-5 rounded-4 form-control"
               onChange={(e) => setDes(e.target.value)}
             />
           </div>
           <div className="col-sm-12 col-lg-6">
-            <p className="bg-primary labeltext">Github Link</p>
+            <h4 className="ms-5 mb-4">Github Link</h4>
 
             <input
               onChange={(e) => setGit(e.target.value)}
-              type="textarea"
-              placeholder="Paste URL"
-              className="custom-input"
+              type="text"
+              placeholder="Paste Github URL"
+              className="form-control ms-5"
+              value={github}
             />
-            <p className="bg-primary labeltext">Resume</p>
-            <div className="row dropbox">
-              <div className="col">
-                <div id="dropArea">
-                  <img id="dropImage" src={dragim} alt="Drop files here" />
-                  <p>Drag and Drop Files to Upload</p>
-                  <p>OR</p>
-                  {/* <button className='btn btn-warning '>Browse</button> */}
-                  <input
-                    className="btn btn-warning text-dark"
-                    style={{ width: "100px" }}
-                    type="file"
-                    accept=".jpg,.jpeg,.png,.gif,.pdf"
-                    onChange={handleFileChange}
-                  />
+            <h4 className="ms-5 mt-3">Resume</h4>
+            <div className="container dropbox mx-5 mt-3">
+              
+                <div className="row">
+
+                  <div id="dropArea" className="col-lg-5">
+                    <img id="dropImage" src={dragim} alt="Drop files here" className="col-lg-3" />
+                    <p>Drag and Drop Files to Upload</p>
+                    <p>OR</p>
+                    {/* <button className='btn btn-warning '>Browse</button> */}
+                    <input
+                      className="btn btn-warning text-dark form-control"
+                      id="actual-btn"
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.gif,.pdf"
+                      onChange={handleFileChange}
+                      hidden
+                    />
+                    <label for="actual-btn" className="btn btn-warning">Browse</label>
+                  </div>
+                <div className="col-lg-6">
+                  <img src={gifimg} className="container-fluid" />
+                </div>
                 </div>
               </div>
-              <div className="col">
-                <img src={gifimg} height="200px" />
-              </div>
-            </div>
+            
+            <button className="btn btn-success float-end  my-5 me-5" onClick={handleSubmit}>Submit</button>
           </div>
         </div>
-        <button className="btn btn-success" onClick={handleSubmit}>Submit</button>
       </div>
     </div>
+    // <div>
+    //     <div className="">
+    //     </div>   
+    // </div>
   );
 }
 

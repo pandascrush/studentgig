@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 const studentsData = async (req, res) => {
   try {
-    const sql = `select * from students`;
+    const sql = `select * from students where role_id=1`;
 
     db.query(sql, (err, result) => {
       if (err) {

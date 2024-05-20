@@ -41,7 +41,7 @@ export function AdminMenu() {
 
             <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="#">
               <h3 style={{ color: "#DC3545" }}></h3>
-              <img src={logo} className="container-fluid" />
+              <img src={logo} className="col-lg-8 h-75" />
             </a>
             {/* <!-- User menu (mobile) --> */}
             <div class="navbar-user d-lg-none">
@@ -82,6 +82,13 @@ export function AdminMenu() {
                   <Link to={`/studata/${id}`}>
                     <a class="nav-link" href="#">
                       <i class="bi bi-people"></i> Students
+                    </a>
+                  </Link>
+                </li>
+                <li class="nav-item">
+                  <Link to={`/addproject/${id}`}>
+                    <a class="nav-link" href="#">
+                      <i class="bi bi-people"></i> Add Project
                     </a>
                   </Link>
                 </li>

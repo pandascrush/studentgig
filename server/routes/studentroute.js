@@ -3,7 +3,7 @@ import { GetSingleStudentData, Logout, StudentLogin, StudentRegistration, Verify
 import upload from '../middleware/multer.js'
 const studentRouter = express.Router()
 
-studentRouter.route('/registration').post(StudentRegistration)
+studentRouter.route('/registration/:id').post(StudentRegistration)
 studentRouter.route('/login').post(StudentLogin)
 studentRouter.route('/getdata/:student_id').get(GetSingleStudentData)
 studentRouter.post('/upload',upload.single('file2'),profileUpdation)

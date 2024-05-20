@@ -6,6 +6,7 @@ import { AdminMenu } from "./AdminMenu";
 import MainContent from "./MainContent";
 import { useParams } from "react-router-dom";
 import StudentsData from "./StudentsData";
+import { Addproject } from "./addproject";
 
 function Dash() {
     
@@ -54,7 +55,7 @@ export function Dashstudent(){
       </div>
     );
 }
-export function Addproject(){
+export function Dashproject(){
   return(
     <>
       <div className="container-fluid">

@@ -7,19 +7,17 @@ import { Link, useParams } from "react-router-dom";
 import filetransfer from "../../Assets/Animation - 1715065850571.gif";
 import "../../../App.css";
 
-
 export default function Profile() {
   const { id } = useParams();
 
-  const [image,setImage] = useState()
+  const [image, setImage] = useState();
 
-  useEffect(()=>{
-    axios.get(`http://localhost:5000/stu/getall/${id}`)
-    .then(res => {
-        // console.log(res.data.result[0].profile_photo)
-        setImage(res.data.result[0].profile_photo)
-    })
-  },[id])
+  useEffect(() => {
+    axios.get(`http://localhost:5000/stu/getall/${id}`).then((res) => {
+      // console.log(res.data.result[0].profile_photo)
+      setImage(res.data.result[0].profile_photo);
+    });
+  }, [id]);
 
   const [selectedSkill, setSelectedSkill] = useState("");
   const [skills, setSKills] = useState([]);
@@ -34,8 +32,7 @@ export default function Profile() {
   useEffect(() => {
     axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
       setName(res.data.msg[0].name);
-      setGithub(res.data.msg[0].github_link)
-
+      setGithub(res.data.msg[0].github_link);
     });
   }, [id]);
 
@@ -45,18 +42,18 @@ export default function Profile() {
     });
   }, []);
 
-//   const [file1, setFile1] = useState(null);
-//   const [file2, setFile2] = useState(null);
+  //   const [file1, setFile1] = useState(null);
+  //   const [file2, setFile2] = useState(null);
   const [Name, setName] = useState("");
   const [git, setGit] = useState("");
 
-//   const handleFile1Change = (e) => {
-//     setFile1(e.target.files[0]);
-//   };
+  //   const handleFile1Change = (e) => {
+  //     setFile1(e.target.files[0]);
+  //   };
 
-//   const handleFile2Change = (e) => {
-//     setFile2(e.target.files[0]);
-//   };
+  //   const handleFile2Change = (e) => {
+  //     setFile2(e.target.files[0]);
+  //   };
 
   // File Handling --> using this to store the resume
   const [selectedFile, setSelectedFile] = useState(null);
@@ -90,12 +87,17 @@ export default function Profile() {
     formData.append("des", des);
 
     try {
-      await axios.post("http://localhost:5000/stu/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert("Files uploaded successfully!");
+      await axios
+        .post("http://localhost:5000/stu/upload", formData)
+        .then((res) => {
+          console.log(res);
+          if (res.data === "Files uploaded successfully") {
+            alert("Files uploaded successfully!");
+          }
+          else if(res.data === "Skill_already_exists_for_this_student"){
+            alert("Skill is Already Exist")
+          }
+        });
     } catch (error) {
       console.error("Error uploading files: ", error);
     }
@@ -107,7 +109,9 @@ export default function Profile() {
       </div>
       <div className="imgposition ms-5  ">
         <img
-          src={ image ? `http://localhost:5000/images/${image}` : `${backgroundimg}`}
+          src={
+            image ? `http://localhost:5000/images/${image}` : `${backgroundimg}`
+          }
           className="portfolioimg"
           alt="Load"
         />
@@ -117,10 +121,7 @@ export default function Profile() {
         <div className="row">
           <div className="col-sm-12 col-lg-5 ms-5">
             <h1 className=" text-capitalize">{Name}</h1>
-            <Link
-              to={`/update/${id}`}
-              className="btn btn-primary rounded-5"
-            >
+            <Link to={`/update/${id}`} className="btn btn-primary rounded-5">
               Edit Profile
             </Link>
             {/* <button className="btn btn-primary rounded-5 p-3 border-black my-2 me-3">Edit Profile</button> */}
@@ -130,7 +131,7 @@ export default function Profile() {
 
             <h3>Skill</h3>
             <h4>Add New Skill</h4>
-           
+
             <select
               className="my-3 border form-control"
               id="skillSelect"
@@ -171,38 +172,48 @@ export default function Profile() {
             />
             <h4 className="ms-5 mt-3">Resume</h4>
             <div className="container dropbox mx-5 mt-3">
-              
-                <div className="row">
-
-                  <div id="dropArea" className="col-lg-5">
-                    <img id="dropImage" src={dragim} alt="Drop files here" className="col-lg-3" />
-                    <p>Drag and Drop Files to Upload</p>
-                    <p>OR</p>
-                    {/* <button className='btn btn-warning '>Browse</button> */}
-                    <input
-                      className="btn btn-warning text-dark form-control"
-                      id="actual-btn"
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.gif,.pdf"
-                      onChange={handleFileChange}
-                      hidden
-                    />
-                    <label for="actual-btn" className="btn btn-warning">Browse</label>
-                  </div>
+              <div className="row">
+                <div id="dropArea" className="col-lg-5">
+                  <img
+                    id="dropImage"
+                    src={dragim}
+                    alt="Drop files here"
+                    className="col-lg-3"
+                  />
+                  <p>Drag and Drop Files to Upload</p>
+                  <p>OR</p>
+                  {/* <button className='btn btn-warning '>Browse</button> */}
+                  <input
+                    className="btn btn-warning text-dark form-control"
+                    id="actual-btn"
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.gif,.pdf"
+                    onChange={handleFileChange}
+                    hidden
+                  />
+                  <label for="actual-btn" className="btn btn-warning">
+                    Browse
+                  </label>
+                </div>
                 <div className="col-lg-6">
                   <img src={gifimg} className="container-fluid" />
                 </div>
-                </div>
               </div>
-            
-            <button className="btn btn-success float-end  my-5 me-5" onClick={handleSubmit}>Submit</button>
+            </div>
+
+            <button
+              className="btn btn-success float-end  my-5 me-5"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
           </div>
         </div>
       </div>
     </div>
     // <div>
     //     <div className="">
-    //     </div>   
+    //     </div>
     // </div>
   );
 }

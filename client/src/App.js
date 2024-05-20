@@ -5,12 +5,8 @@ import {
   Studentdashboard,
   Studentprofile,
 } from "./Components/Dashboard/student_dashboard/Studentdashboard";
-import MaybeShowNavBar from "./MayBeShowTheNavBar/MayBeShowTheNavBar";
-// import { Profile } from "./Components/Dashboard/student_dashboard/Profile";
 import ProfileUpdate from "./Components/Dashboard/student_dashboard/ProfileUpdate";
-import Dash, { Addproject, Dashprofile, Dashstudent } from "./Components/Dashboard/admin_dashboard/Dash";
-import MainContent from "./Components/Dashboard/admin_dashboard/MainContent";
-import StudentsData from "./Components/Dashboard/admin_dashboard/StudentsData";
+import Dash, {Dashprofile, Dashproject, Dashstudent } from "./Components/Dashboard/admin_dashboard/Dash";
 
 function App() {
   return (
@@ -27,7 +23,7 @@ function App() {
           <Route path="/manager/:id" Component={Dash} />
           <Route path="/dash/:id" Component={Dashprofile} />
           <Route path="/studata/:id" Component={Dashstudent}/>
-          <Route path="/addproject/:id" Component={Addproject}/>
+          <Route path="/addproject/:id" Component={Dashproject}/>
         </Routes>
       </BrowserRouter>
     </>

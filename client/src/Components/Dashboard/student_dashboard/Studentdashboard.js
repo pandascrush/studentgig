@@ -3,6 +3,7 @@ import { StudentMenu } from "./StudentMenu";
 import Profile from "./Profile1";
 import Barchart from "../admin_dashboard/Barchart";
 import Kgcas from "../admin_dashboard/Progress";
+import StudentProject from "./StuentProject";
 
 export function Studentdashboard() {
   return (
@@ -13,11 +14,7 @@ export function Studentdashboard() {
             <StudentMenu />
           </div>
           <div className="col-lg-10">
-            <div className="row">
-              {/* <Barchart/>
-              <Kgcas/> */}
-              <h1>Project</h1>
-            </div>
+            <StudentProject />
           </div>
         </div>
       </div>

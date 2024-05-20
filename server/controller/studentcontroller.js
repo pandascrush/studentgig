@@ -3,21 +3,24 @@ import path from "path";
 import jwt from "jsonwebtoken";
 
 const StudentRegistration = async (req, res) => {
-
-  let { name,email,password,selectedCategory,selectedCollege,year,skill} =
-  req.body;
-
-  console.log(name,email,password,selectedCategory,selectedCollege,year,skill);
-  
+  let {
+    name,
+    email,
+    password,
+    selectedCategory,
+    selectedCollege,
+    year,
+    skill,
+  } = req.body;
 
   let registrationsql =
     "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
   db.query(
     registrationsql,
-    [name, email, password, selectedCollege, year,skill,selectedCategory],
+    [name, email, password, selectedCollege, year, skill, selectedCategory],
     (error, result) => {
       if (error) {
-        console.log("error",error);
+        console.log("error", error);
         res.json({ status: "error" });
       } else {
         res.json({ status: "inserted" });
@@ -67,7 +70,6 @@ const GetSingleStudentData = async (req, res) => {
 
 const profileUpdation = async (req, res) => {
   const { id, git, des, url, skill } = req.body;
-
   const file = req.file;
 
   if (!file) {
@@ -79,31 +81,42 @@ const profileUpdation = async (req, res) => {
   const file1Path = file.path;
 
   try {
-    const sql =
-      "update students set github_link=?,resume_file=? where student_id=?";
-    db.query(sql, [git, file1Path, id], (err, result) => {
+    const sqlUpdateStudent = "UPDATE students SET github_link=?, resume_file=? WHERE student_id=?";
+    db.query(sqlUpdateStudent, [git, file1Path, id], (err, result) => {
       if (err) {
-        console.error("Error inserting files into database: ", err);
-        res.status(500).send("Internal server error");
-      } else {
-        let sql =
-          "insert into student_skills(student_id,skill_id,skill_url,skill_description)values(?,?,?,?)";
-        db.query(sql, [id, skill, url, des], (error, result) => {
-          if (error) {
-            console.log("error");
-            res.json({ status: "error" });
-          } else {
-            res.json({ status: "inserted" });
-          }
-        });
-        console.log("Files inserted into database");
-        res.status(200).send("Files uploaded successfully.");
+        console.error("Error updating student in the database: ", err);
+        return res.status(500).send("Internal server error");
       }
+
+      const sqlCheckSkill = "SELECT * FROM student_skills WHERE student_id=? AND skill_id=?";
+      db.query(sqlCheckSkill, [id, skill], (err, results) => {
+        if (err) {
+          console.error("Error checking skills in the database: ", err);
+          return res.status(500).send("Internal server error");
+        }
+
+        if (results.length > 0) {
+          // Entry already exists
+          return res.status(400).send("Skill_already_exists_for_this_student");
+        } else {
+          const sqlInsertSkill = "INSERT INTO student_skills(student_id, skill_id, skill_url, skill_description) VALUES (?, ?, ?, ?)";
+          db.query(sqlInsertSkill, [id, skill, url, des], (err, result) => {
+            if (err) {
+              console.error("Error inserting skill into the database: ", err);
+              return res.status(500).json({ status: "error" });
+            }
+
+            res.status(200).send("Files uploaded successfully");
+          });
+        }
+      });
     });
   } catch (e) {
-    res.json({ msg: "db_error" });
+    res.status(500).json({ msg: "db_error" });
   }
 };
+
+
 
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;

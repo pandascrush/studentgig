@@ -24,9 +24,6 @@ export function Registration() {
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(name,email,password,selectedCategory,selectedCollege,year,skill);
-    
     
     // Here you can handle form submission, e.g., send form data to server
     // Reset form fields after submission

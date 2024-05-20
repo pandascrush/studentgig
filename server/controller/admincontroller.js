@@ -70,4 +70,45 @@ const filterStudentSkills = async (req, res) => {
   }
 };
 
-export { studentsData, studentsCount, filterCollegeStduents, filterStudentSkills };
+const addProjects = async (req, res) => {
+  const { pname, pdes, skill } = req.body;
+
+  const sql =
+    "insert into projects(project_name,description,stack,status_id)values(?,?,?,1)";
+
+  db.query(sql, [pname, pdes, skill], (err, result) => {
+    if (err) {
+      res.json({ msg: "db_error" });
+      console.log(err);
+    } else {
+      res.json({ msg: "added" });
+    }
+  });
+};
+
+const skillBasedProjects =async(req,res)=>{
+  const {id} = req.params
+
+  const sql = `SELECT p.project_id, p.project_name, p.description
+  FROM projects p
+  JOIN student_skills ss ON p.stack = ss.skill_id
+  WHERE ss.student_id = ?`
+
+  db.query(sql,[id],(err,result)=>{
+    if(err){
+      res.json({msg:'db_error'})
+    }
+    else{
+      res.json({result})
+    }
+  })
+}
+
+export {
+  studentsData,
+  studentsCount,
+  filterCollegeStduents,
+  filterStudentSkills,
+  addProjects,
+  skillBasedProjects
+};

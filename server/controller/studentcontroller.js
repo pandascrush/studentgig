@@ -1,6 +1,7 @@
 import db from "../config/db.js";
 import path from "path";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 const StudentRegistration = async (req, res) => {
   let {
@@ -13,20 +14,40 @@ const StudentRegistration = async (req, res) => {
     skill,
   } = req.body;
 
-  let registrationsql =
-    "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
-  db.query(
-    registrationsql,
-    [name, email, password, selectedCollege, year, skill, selectedCategory],
-    (error, result) => {
-      if (error) {
-        console.log("error", error);
-        res.json({ status: "error" });
+  const checkEmailQuery =
+    "SELECT COUNT(*) AS count FROM students WHERE email = ?";
+  db.query(checkEmailQuery, [email], (err, result) => {
+    if (err) {
+      res.send("db_error");
+    } else {
+      if (result[0].count > 0) {
+        return res.status(200).send("Email already exists");
       } else {
-        res.json({ status: "inserted" });
+        let registrationsql =
+          "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
+        db.query(
+          registrationsql,
+          [
+            name,
+            email,
+            password,
+            selectedCollege,
+            year,
+            skill,
+            selectedCategory,
+          ],
+          (error, result) => {
+            if (error) {
+              console.log("error", error);
+              res.json({ status: "error" });
+            } else {
+              res.json({ status: "inserted" });
+            }
+          }
+        );
       }
     }
-  );
+  });
 };
 
 const StudentLogin = async (req, res) => {
@@ -81,14 +102,16 @@ const profileUpdation = async (req, res) => {
   const file1Path = file.path;
 
   try {
-    const sqlUpdateStudent = "UPDATE students SET github_link=?, resume_file=? WHERE student_id=?";
+    const sqlUpdateStudent =
+      "UPDATE students SET github_link=?, resume_file=? WHERE student_id=?";
     db.query(sqlUpdateStudent, [git, file1Path, id], (err, result) => {
       if (err) {
         console.error("Error updating student in the database: ", err);
         return res.status(500).send("Internal server error");
       }
 
-      const sqlCheckSkill = "SELECT * FROM student_skills WHERE student_id=? AND skill_id=?";
+      const sqlCheckSkill =
+        "SELECT * FROM student_skills WHERE student_id=? AND skill_id=?";
       db.query(sqlCheckSkill, [id, skill], (err, results) => {
         if (err) {
           console.error("Error checking skills in the database: ", err);
@@ -99,7 +122,8 @@ const profileUpdation = async (req, res) => {
           // Entry already exists
           return res.status(400).send("Skill_already_exists_for_this_student");
         } else {
-          const sqlInsertSkill = "INSERT INTO student_skills(student_id, skill_id, skill_url, skill_description) VALUES (?, ?, ?, ?)";
+          const sqlInsertSkill =
+            "INSERT INTO student_skills(student_id, skill_id, skill_url, skill_description) VALUES (?, ?, ?, ?)";
           db.query(sqlInsertSkill, [id, skill, url, des], (err, result) => {
             if (err) {
               console.error("Error inserting skill into the database: ", err);
@@ -115,8 +139,6 @@ const profileUpdation = async (req, res) => {
     res.status(500).json({ msg: "db_error" });
   }
 };
-
-
 
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;
@@ -164,6 +186,92 @@ const getSingleProfile = async (req, res) => {
   });
 };
 
+const getStudentSkills = async (req, res) => {
+  const { id } = req.params;
+
+  const sql = `SELECT 
+  s.skill_name
+FROM 
+  skills s
+JOIN 
+  student_skills ss
+ON 
+  s.skill_id = ss.skill_id
+WHERE 
+  ss.student_id = ?`;
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+};
+
+const ForgotPassword = async (req, res) => {
+  const { Email } = req.body;
+  console.log(Email);
+
+  const sql = `SELECT * FROM students WHERE email = ?`;
+  db.query(sql, [Email], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      const id = result[0].student_id;
+      const token = jwt.sign({ id: id }, "secretkey", {
+        expiresIn: "5m",
+      });
+
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "sivaranji5670@gmail.com",
+          pass: "zicd vrfo zxbs jsfb ",
+        },
+      });
+
+      const text = `http://localhost:3000/reset/${token}`;
+
+      var mailOptions = {
+        from: "sivaranji5670@gmail.com",
+        to: Email,
+        subject: "Regarding Reset Password",
+        html: `<h1>Reset Password Link</h1>
+        <p>Password reset refers to the process of changing or recovering a forgotten password for a user account in an organization's system</p>
+        <h2>${text}</h2>`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      res.send("mail_sended");
+    }
+  });
+};
+
+const ResetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { Password } = req.body;
+
+  const verified = jwt.verify(token, "secretkey");
+  const userId = verified.id;
+
+  const sql = `UPDATE students
+  SET password = ?
+  WHERE student_id = ?`;
+  db.query(sql, [Password, userId], (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("password_updated");
+    }
+  });
+};
+
 const Verify = async (req, res) => {
   res.json({ status: true, msg: "authorized" });
 };
@@ -182,4 +290,7 @@ export {
   StudentLogin,
   GetSingleStudentData,
   profileUpdation,
+  getStudentSkills,
+  ForgotPassword,
+  ResetPassword,
 };

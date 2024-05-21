@@ -106,7 +106,7 @@ export function Login() {
                                                 <span className="checkmark"></span>
                                         </label> */}
                     <div className="ms-auto ">
-                      <a href="#">Forgot Password</a>
+                      <Link to={`/forgot`}>Forgot Password</Link>
                     </div>
                   </div>
                   <br />

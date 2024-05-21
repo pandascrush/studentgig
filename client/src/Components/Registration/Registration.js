@@ -19,33 +19,44 @@ export function Registration() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [skill,setSkill] = useState()
+  const [skill, setSkill] = useState();
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Here you can handle form submission, e.g., send form data to server
     // Reset form fields after submission
 
-    axios.post("http://localhost:5000/stu/registration",{name,email,password,selectedCategory,selectedCollege,year,skill})
-    .then((res) => {
-      if (res.data.status === "inserted") {
-        alert("data are Registed successfully");
-        window.location.href = "/";
-      } else if (res.data.status === "error") {
-        alert("Already register...");
-      } else {
-        alert("data are not Registed");
-      }
-    });
+    axios
+      .post("http://localhost:5000/stu/registration", {
+        name,
+        email,
+        password,
+        selectedCategory,
+        selectedCollege,
+        year,
+        skill,
+      })
+      .then((res) => {
+        if (res.data.status === "inserted") {
+          alert("data are Registed successfully");
+          window.location.href = "/";
+        } else if (res.data === "Email already exists") {
+          alert("Email id is already Registered");
+        } else if (res.data.status === "error") {
+          alert("Already register...");
+        } else {
+          alert("data are not Registed");
+        }
+      });
   };
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [colleges, setColleges] = useState([]);
   const [selectedCollege, setSelectedCollege] = useState("");
   const [courses, setCourses] = useState([]);
-  const [year,setYear] = useState('')
+  const [year, setYear] = useState("");
 
   useEffect(() => {
     if (selectedCategory) {
@@ -76,7 +87,7 @@ export function Registration() {
       .catch((error) => console.error("Error fetching courses:", error));
   };
   const options = [...Array(courses).keys()].map((i) => i + 1);
-  
+
   return (
     <>
       <div className="container-fluid paddingleft">
@@ -148,9 +159,7 @@ export function Registration() {
                     >
                       <option value="">--Course--</option>
                       {colleges.map((college) => (
-                        <option
-                          value={college.course_id}
-                        >
+                        <option value={college.course_id}>
                           {college.course_name}
                         </option>
                       ))}
@@ -161,13 +170,11 @@ export function Registration() {
                     <select
                       className="form-control"
                       disabled={!selectedCollege}
-                      onChange={e=>setYear(e.target.value)}
+                      onChange={(e) => setYear(e.target.value)}
                     >
                       <option value="">--year--</option>
                       {options.map((course) => (
-                        <option>
-                          {course} Year
-                        </option>
+                        <option>{course} Year</option>
                       ))}
                     </select>
                   </div>

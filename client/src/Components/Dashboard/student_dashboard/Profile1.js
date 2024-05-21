@@ -24,6 +24,7 @@ export default function Profile() {
   const [skillUrl, setSkillUrl] = useState("");
   const [github, setGithub] = useState("");
   const [des, setDes] = useState("");
+  const [skillname, setSkillname] = useState([]);
 
   const handleChange = (event) => {
     setSelectedSkill(event.target.value);
@@ -42,18 +43,18 @@ export default function Profile() {
     });
   }, []);
 
-  //   const [file1, setFile1] = useState(null);
-  //   const [file2, setFile2] = useState(null);
+  useEffect(() => {
+    axios.get(`http://localhost:5000/stu/getSkill/${id}`).then((res) => {
+      const data = res.data;
+      const Skill_name = data.map((e) => {
+        return e.skill_name;
+      });
+      setSkillname(Skill_name);
+    });
+  }, [id]);
+
   const [Name, setName] = useState("");
   const [git, setGit] = useState("");
-
-  //   const handleFile1Change = (e) => {
-  //     setFile1(e.target.files[0]);
-  //   };
-
-  //   const handleFile2Change = (e) => {
-  //     setFile2(e.target.files[0]);
-  //   };
 
   // File Handling --> using this to store the resume
   const [selectedFile, setSelectedFile] = useState(null);
@@ -93,9 +94,8 @@ export default function Profile() {
           console.log(res);
           if (res.data === "Files uploaded successfully") {
             alert("Files uploaded successfully!");
-          }
-          else if(res.data === "Skill_already_exists_for_this_student"){
-            alert("Skill is Already Exist")
+          } else if (res.data === "Skill_already_exists_for_this_student") {
+            alert("Skill is Already Exist");
           }
         });
     } catch (error) {
@@ -121,15 +121,29 @@ export default function Profile() {
         <div className="row">
           <div className="col-sm-12 col-lg-5 ms-5">
             <h1 className=" text-capitalize">{Name}</h1>
-            <Link to={`/update/${id}`} className="btn btn-primary rounded-5">
+            <Link
+              to={`/update/${id}`}
+              className="btn btn-primary rounded-5 my-1"
+            >
               Edit Profile
             </Link>
             {/* <button className="btn btn-primary rounded-5 p-3 border-black my-2 me-3">Edit Profile</button> */}
             {/* <button className="btn  rounded-5 ms-2 border-black my-2">
               Settings
             </button> */}
-
-            <h3>Skill</h3>
+            <div className="d-flex">
+              <h3>Skill </h3>
+              {skillname.map((e) => {
+                return (
+                  <h3
+                    style={{ fontSize: "15px", marginLeft: "10px" }}
+                    className="pt-1 bg-secondary text-light border border-dark rounded-5 px-3"
+                  >
+                    {e}{" "}
+                  </h3>
+                );
+              })}
+            </div>
             <h4>Add New Skill</h4>
 
             <select
@@ -187,7 +201,7 @@ export default function Profile() {
                     className="btn btn-warning text-dark form-control"
                     id="actual-btn"
                     type="file"
-                    accept=".jpg,.jpeg,.png,.gif,.pdf"
+                    accept=".pdf"
                     onChange={handleFileChange}
                     hidden
                   />

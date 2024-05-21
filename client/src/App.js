@@ -7,6 +7,8 @@ import {
 } from "./Components/Dashboard/student_dashboard/Studentdashboard";
 import ProfileUpdate from "./Components/Dashboard/student_dashboard/ProfileUpdate";
 import Dash, {Dashprofile, Dashproject, Dashstudent } from "./Components/Dashboard/admin_dashboard/Dash";
+import ForgotPassword from "./Components/Dashboard/Password/ForgotPassword";
+import ResetPassword from "./Components/Dashboard/Password/ResetPassword";
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
           <Route path="/dash/:id" Component={Dashprofile} />
           <Route path="/studata/:id" Component={Dashstudent}/>
           <Route path="/addproject/:id" Component={Dashproject}/>
+          {/*Forgot Password*/}
+          <Route path="/forgot" Component={ForgotPassword} />
+          <Route path="/reset/:token" Component={ResetPassword} />
         </Routes>
       </BrowserRouter>
     </>

@@ -5,6 +5,7 @@ export function Addproject() {
   const [pname, setPname] = useState("");
   const [pdes, setPdes] = useState("");
   const [skill, setSkill] = useState("");
+  const [date, setDate] = useState();
 
   const [college, setCollege] = useState([]);
   useEffect(() => {
@@ -18,7 +19,7 @@ export function Addproject() {
     e.preventDefault();
 
     axios
-      .post(`http://localhost:5000/admin/addproject`, { pname, pdes,skill })
+      .post(`http://localhost:5000/admin/addproject`, { pname, pdes, skill,date })
       .then((res) => {
         if (res.data.msg === "added") {
           alert("Project Added");
@@ -56,19 +57,24 @@ export function Addproject() {
           <label for="floatingTextarea2">Comments</label>
         </div>
         <div className="form-group">
-          <label className="form-control-label">College:</label>
+          <label className="form-control-label">stack</label>
           <select
             name="college"
             className="form-control"
             style={{ width: "300px" }}
             onChange={(e) => setSkill(e.target.value)}
           >
-            <option value="">Select College</option>
+            <option value="">Select Stack</option>
             {college.map((value, index) => (
               <option value={value.skill_id}>{value.skill_name}</option>
             ))}
             <option>Add New</option>
           </select>
+        </div>
+        <div>
+          <label>Choose Expiry Date</label>
+          <br />
+          <input onChange={e=>setDate(e.target.value)} type="datetime-local" className="border border-radius-5" />
         </div>
         <br />
         <button type="submit" className="btn btn-primary">

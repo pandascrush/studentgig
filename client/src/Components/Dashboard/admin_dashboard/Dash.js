@@ -7,9 +7,10 @@ import MainContent from "./MainContent";
 import { useParams } from "react-router-dom";
 import StudentsData from "./StudentsData";
 import { Addproject } from "./addproject";
+import Projects from "./Projects";
+import BitConfirm from "./BitConfirm";
 
 function Dash() {
-    
   return (
     <>
       <div className="container-fluid">
@@ -19,8 +20,8 @@ function Dash() {
           </div>
           <div className="col-lg-10">
             {/* <MainContent/> */}
-            <Barchart/>
-            <Kgcas/>
+            <Barchart />
+            <Kgcas />
           </div>
         </div>
       </div>
@@ -29,34 +30,35 @@ function Dash() {
 }
 
 export function Dashprofile() {
-    return(
-  <div className="container-fluid">
-    <div className="row">
-      <div className="col-lg-2">
-        <AdminMenu />
-      </div>
-      <div className="col-lg-10">
-        <MainContent />
-      </div>
-    </div>
-  </div>)
-}
-export function Dashstudent(){
-    return(
-        <div className="container-fluid">
-        <div className="row">
-          <div className="col-lg-2">
-            <AdminMenu />
-          </div>
-          <div className="col-lg-10">
-            <StudentsData/>
-          </div>
+  return (
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-lg-2">
+          <AdminMenu />
+        </div>
+        <div className="col-lg-10">
+          <MainContent />
         </div>
       </div>
-    );
+    </div>
+  );
 }
-export function Dashproject(){
-  return(
+export function Dashstudent() {
+  return (
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-lg-2">
+          <AdminMenu />
+        </div>
+        <div className="col-lg-10">
+          <StudentsData />
+        </div>
+      </div>
+    </div>
+  );
+}
+export function Dashproject() {
+  return (
     <>
       <div className="container-fluid">
         <div className="row">
@@ -64,7 +66,41 @@ export function Dashproject(){
             <AdminMenu />
           </div>
           <div className="col-lg-10">
-            <Addproject/>
+            <Addproject />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function DashAllProjects() {
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-2">
+            <AdminMenu />
+          </div>
+          <div className="col-lg-10">
+            <Projects />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function DashBit() {
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-2">
+            <AdminMenu />
+          </div>
+          <div className="col-lg-10">
+            <BitConfirm />
           </div>
         </div>
       </div>

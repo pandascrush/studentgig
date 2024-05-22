@@ -11,3 +11,54 @@
     background-size: cover;
     cursor: pointer;
 }
+
+/* Project Details css */
+
+.project-details-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .project-details {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project-details h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .project-details p {
+    margin-bottom: 8px;
+  }
+
+  .edit-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+
+  .edit-button1 {
+    background-color: rgb(247, 61, 61);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+
+  .edit-button1:hover {
+    background-color: rgb(236, 29, 29);
+  }

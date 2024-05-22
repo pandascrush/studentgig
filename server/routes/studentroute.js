@@ -1,5 +1,5 @@
 import express from 'express'
-import { ForgotPassword, GetSingleStudentData, Logout, ResetPassword, StudentLogin, StudentRegistration, Verify, getSingleProfile, getStudentSkills, profileUpdation, updateUserData } from '../controller/studentcontroller.js'
+import { ForgotPassword, GetSingleStudentData, Logout, ResetPassword, StudentLogin, StudentProjectDetails, StudentRegistration, Verify, getSingleProfile, getStudentSkills, profileUpdation, updateUserData } from '../controller/studentcontroller.js'
 import upload from '../middleware/multer.js'
 const studentRouter = express.Router()
 
@@ -8,6 +8,9 @@ studentRouter.route('/login').post(StudentLogin)
 studentRouter.route('/getdata/:student_id').get(GetSingleStudentData)
 studentRouter.post('/upload',upload.single('file2'),profileUpdation)
 studentRouter.put('/update',upload.single('file'),updateUserData)
+
+// project Details
+studentRouter.route('/prodeatil/:id').get(StudentProjectDetails)
 
 // Forgot Password
 studentRouter.route('/forgot').post(ForgotPassword)

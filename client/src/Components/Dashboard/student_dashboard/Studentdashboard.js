@@ -4,6 +4,7 @@ import Profile from "./Profile1";
 import Barchart from "../admin_dashboard/Barchart";
 import Kgcas from "../admin_dashboard/Progress";
 import StudentProject from "./StuentProject";
+import ProjectDeatails from "./ProjectDeatails";
 
 export function Studentdashboard() {
   return (
@@ -32,6 +33,24 @@ export function Studentprofile() {
           </div>
           <div className="col-lg-10 background sideback">
             <Profile />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+
+export function StudentprojectDeatil() {
+  return (
+    <>
+      <div className="container-fluid sideback">
+        <div className="row sideback">
+          <div className="col-lg-2 sideback">
+            <StudentMenu />
+          </div>
+          <div className="col-lg-10 sideback">
+            <ProjectDeatails />
           </div>
         </div>
       </div>

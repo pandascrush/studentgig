@@ -1,33 +1,61 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-function StuentProject() {
+function StudentProject() {
   const { id } = useParams();
+  const [projects, setProjects] = useState([]);
 
-  const [project,setProject] = useState([])
-  useEffect(()=>{
-    axios.get(`http://localhost:5000/admin/basproject/${id}`)
-    .then(res => {
-        console.log(res)
-        setProject(res.data.result)
-    })
-  },[])
+  useEffect(() => {
+    axios.get(`http://localhost:5000/admin/basproject/${id}`).then((res) => {
+      setProjects(res.data.result.map(project => ({
+        ...project,
+        formatted_expiry_date: formatExpiryDate(project.expiry_date)
+      })));
+    });
+  }, [id]);
 
-  return(
+  // Function to format the expiry date
+  const formatExpiryDate = (expiryDate) => {
+    let date = new Date(expiryDate);
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let formattedTime = hours + ':' + minutes + ' ' + ampm;
+    let options = { year: 'numeric', month: 'long', day: 'numeric' };
+    let formattedDate = date.toLocaleDateString('en-US', options);
+    return formattedDate + ' ' + formattedTime;
+  };
+
+  return (
     <div>
-        {
-            project.map((e,i)=>{
-                return(
-                    <div className="card m-2 p-3">
-                        <h1>{i+1}. {e.project_name}</h1>
-                        <p>{e.description}</p>
-                    </div>
-                )
-            })
-        }
+      <table className="table table-hover table-nowrap">
+        <thead className="thead-light">
+          <tr>
+            <th scope="col">Serial No</th>
+            <th scope="col">Project Name</th>
+            <th scope="col">Project Details</th>
+            <th>Expires In</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.map((project, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{project.project_name}</td>
+              <td>
+                <Link to={`/detail/${project.project_id}`} className="btn btn-success">View</Link>
+              </td>
+              <td>{project.formatted_expiry_date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  )
+  );
 }
 
-export default StuentProject;
+export default StudentProject;

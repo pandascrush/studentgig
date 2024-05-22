@@ -71,12 +71,12 @@ const filterStudentSkills = async (req, res) => {
 };
 
 const addProjects = async (req, res) => {
-  const { pname, pdes, skill } = req.body;
+  const { pname, pdes, skill, date } = req.body;
 
   const sql =
-    "insert into projects(project_name,description,stack,status_id)values(?,?,?,1)";
+    "insert into projects(project_name,description,stack,expiry_date,status_id)values(?,?,?,?,1)";
 
-  db.query(sql, [pname, pdes, skill], (err, result) => {
+  db.query(sql, [pname, pdes, skill,date], (err, result) => {
     if (err) {
       res.json({ msg: "db_error" });
       console.log(err);
@@ -89,7 +89,7 @@ const addProjects = async (req, res) => {
 const skillBasedProjects =async(req,res)=>{
   const {id} = req.params
 
-  const sql = `SELECT p.project_id, p.project_name, p.description
+  const sql = `SELECT p.project_id, p.project_name, p.description, p.expiry_date, p.created_at
   FROM projects p
   JOIN student_skills ss ON p.stack = ss.skill_id
   WHERE ss.student_id = ?`

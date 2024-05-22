@@ -22,14 +22,23 @@ function App() {
           <Route path="/student/:id" Component={Studentdashboard} />
           <Route path="/profile/:id" Component={Studentprofile} />
           <Route path="/update/:id" Component={ProfileUpdate} />
+<<<<<<< HEAD
           <Route path="/detail/:id/:proid" Component={StudentprojectDeatil}/>
           <Route path="/bit/:id" Component={DashBit} />
+=======
+          {/* <Route path="/proDeatail/:id" Component={ProjectDeatails} /> */}
+          <Route path="/detail/:id" Component={StudentprojectDeatil}/>
+
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
           {/*Admin Routes */}
           <Route path="/manager/:id" Component={Dash} />
           <Route path="/dash/:id" Component={Dashprofile} />
           <Route path="/studata/:id" Component={Dashstudent}/>
           <Route path="/addproject/:id" Component={Dashproject}/>
+<<<<<<< HEAD
           <Route path="/getprojects/:id" Component={DashAllProjects} />
+=======
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
 
           {/*Forgot Password*/}
           <Route path="/forgot" Component={ForgotPassword} />

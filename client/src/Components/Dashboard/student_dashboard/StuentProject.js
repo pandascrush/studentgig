@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 function StudentProject() {
+<<<<<<< HEAD
   const { id } = useParams();  
+=======
+  const { id } = useParams();
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -32,11 +36,15 @@ function StudentProject() {
 
   return (
     <div>
+<<<<<<< HEAD
      {
       projects.length === 0 ?(
         <h2>Please Update Your Profile</h2>
       ):(
         <table className="table table-hover table-nowrap">
+=======
+      <table className="table table-hover table-nowrap">
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
         <thead className="thead-light">
           <tr>
             <th scope="col">Serial No</th>
@@ -46,21 +54,32 @@ function StudentProject() {
           </tr>
         </thead>
         <tbody>
+<<<<<<< HEAD
           {  projects.map((project, index) => (
+=======
+          {projects.map((project, index) => (
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{project.project_name}</td>
               <td>
+<<<<<<< HEAD
                 <Link to={`/detail/${id}/${project.project_id}`} className="btn btn-success">View</Link>
+=======
+                <Link to={`/detail/${project.project_id}`} className="btn btn-success">View</Link>
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
               </td>
               <td>{project.formatted_expiry_date}</td>
             </tr>
           ))}
         </tbody>
       </table>
+<<<<<<< HEAD
       )
      }
       
+=======
+>>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
     </div>
   );
 }

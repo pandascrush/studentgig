@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  acceptBitting,
   addProjects,
   bittedInfo,
   filterCollegeStduents,
@@ -23,5 +24,7 @@ adminRouter.route('/bitinfo').post(studentBitInfo)
 adminRouter.route('/getallprojects').get(getAllProjects)
 adminRouter.route('/getbit').get(getBitInfo)
 adminRouter.route('/bittedDetail/:id').get(bittedInfo)
+
+adminRouter.route('/accept/:stuid/:proid').post(acceptBitting)
 
 export default adminRouter;

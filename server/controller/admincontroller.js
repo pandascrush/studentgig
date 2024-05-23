@@ -1,4 +1,5 @@
 import db from "../config/db.js";
+import nodemailer from "nodemailer";
 
 const studentsData = async (req, res) => {
   try {
@@ -77,7 +78,6 @@ const addProjects = async (req, res) => {
     "insert into projects(project_name,description,stack,expiry_date,status_id)values(?,?,?,?,1)";
 
   db.query(sql, [pname, pdes, skill, date], (err, result) => {
-
     if (err) {
       res.json({ msg: "db_error" });
       console.log(err);
@@ -160,7 +160,7 @@ const getBitInfo = async (req, res) => {
 const bittedInfo = async (req, res) => {
   const { id } = req.params;
 
-  const sql = `SELECT p.project_id,p.project_name,b.bit_id, b.student_id, s.name AS student_name, s.college_id, c.college_name, b.datetime, b.bit_status_id
+  const sql = `SELECT p.project_id,p.project_name,b.bit_id, b.student_id,s.name AS student_name,s.email,s.college_id, c.college_name, b.datetime, b.bit_status_id
   FROM projects p
   JOIN bit b ON p.project_id = b.project_id
   JOIN students s ON b.student_id = s.student_id
@@ -176,6 +176,129 @@ const bittedInfo = async (req, res) => {
   });
 };
 
+const acceptBitting = async (req, res) => {
+  const { stuid, proid } = req.params;
+  const { email } = req.body;
+
+  const sql = `UPDATE bit
+  SET bit_status_id = CASE
+      WHEN student_id = ? THEN 1 
+      ELSE 2 
+  END
+  WHERE project_id = ?`;
+
+  db.query(sql, [stuid, proid], (err, result) => {
+    if (err) {
+      res.send("dB_error", err);
+    } else {
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "sivaranji5670@gmail.com",
+          pass: "zicd vrfo zxbs jsfb ",
+        },
+      });
+
+      var mailOptions = {
+        from: "sivaranji5670@gmail.com",
+        to: email,
+        subject: "Confirmation msg",
+        html: `<!DOCTYPE html>
+          <html>
+          <head>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                      margin: 0;
+                      padding: 0;
+                      background-color: #f4f4f4;
+                  }
+                  .container {
+                      max-width: 600px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      background-color: #ffffff;
+                      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  }
+                  .header {
+                      text-align: center;
+                      padding: 10px 0;
+                      background-color: #007bff;
+                      color: #ffffff;
+                  }
+                  .content {
+                      padding: 20px;
+                  }
+                  .footer {
+                      text-align: center;
+                      padding: 10px 0;
+                      background-color: #f4f4f4;
+                      color: #333333;
+                      font-size: 12px;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <h1>Request Confirmation</h1>
+                  </div>
+                  <div class="content">
+                      <p>Dear User,</p>
+                      <p>We are pleased to inform you that your request has been accepted by the admin.</p>
+                      <p>You can now proceed with the next steps as outlined in the instructions provided.</p>
+                      <p>If you have any questions or need further assistance, feel free to contact us.</p>
+                      <p>Best regards,</p>
+                      <p><strong>Your Company Name</strong></p>
+                  </div>
+                  <div class="footer">
+                      <p>&copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+                      <p>1234 Street Name, City, State, 12345</p>
+                  </div>
+              </div>
+          </body>
+          </html>`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+
+      const sql = `DELETE FROM bit
+      WHERE bit_status_id = 2
+        AND project_id = ?`;
+
+      db.query(sql, [proid], (err, result) => {
+        if (err) {
+          res.send("sub_query_error");
+        } else {
+          const sql = `UPDATE projects
+          SET status_id = (SELECT status_id FROM status WHERE status = 'assigned')
+          WHERE project_id = ?
+          AND EXISTS (
+              SELECT 1
+              FROM bit
+              WHERE project_id = ?
+              AND bit_status_id = 1
+          );`
+          db.query(sql,[proid,proid],(err,result)=>{
+            if(err){
+              res.send("this_is_inner_most_query_error")
+            }
+            else{
+              res.send("updated")
+            }
+          })
+        }
+      });
+    }
+  });
+};
+
 export {
   studentsData,
   studentsCount,
@@ -187,4 +310,5 @@ export {
   getAllProjects,
   getBitInfo,
   bittedInfo,
+  acceptBitting,
 };

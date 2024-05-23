@@ -1,0 +1,29 @@
+.footer-body{
+    background-color: #348ABA;
+}
+.footbox{
+    background-color: white;
+    color: #348ABA;
+    width: 149px;
+    height: 48px;
+    border-radius: 0px !important;
+}
+.headingtext{
+   font-size: 25px;
+   letter-spacing: 2.8px;
+}
+.paratext{
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+.box2{
+   text-align: center;
+   margin: 3px; 
+}
+img{
+    height: 350px;
+}
+#footim{
+    height: 200px;
+    width: 200px;
+}

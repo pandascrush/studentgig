@@ -1,0 +1,66 @@
+.img-large{
+    height: 400px;
+    object-fit: cover;
+  }
+  #procedure {
+    padding: 50px 0;
+  }
+  .m-2 {
+    position: relative;
+  }
+  .carim {
+    width: 100%;
+    height: 500px;
+  }
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .m-2:hover .overlay {
+    opacity: 1;
+  }
+  .overlay h3, .overlay p {
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+  }
+  img{
+    max-height: 400px !important;
+    max-width: 400px !important;
+  }
+  #smd{
+  display: none;
+  }
+  @media (max-width: 1023px) {
+    #smd {
+      display: block;
+    }
+  } 
+  #lgd{
+    display:none;
+  }
+  .im{
+    position: relative;
+    width:810px;
+    height: 600px;
+    margin: 15px 0 0 2px;
+    background: url("../src/assets/How\ it\ works\ image.png")
+      no-repeat;  
+  } 
+  
+  @media (min-width:1024px){
+    #lgd{
+        display:block;
+    } 
+  } 

@@ -1,65 +1,95 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
+import React, { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
-function Barchart() {
-  const [Data, setData] = useState([]);
+const COLORS = ["#00C49F", "#FFBB28", "#FF8042"];
+
+const DoughnutPieChart = () => {
+  
+  const [clg,setClg] = useState([])
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/admin/skill`).then((res) => {
-      setData(res.data.result);
+    axios.get(`http://localhost:5000/admin/college`).then((res) => {
+      // console.log(res.data)
+      setClg(res.data.msg)
     });
   }, []);
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-  );
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Bar Chart",
-      },
-    },
-  };
-
-  const data = {
-    labels: Data.map(e => e.skill_name),
-    datasets: [
-      {
-        label: "SKILLS",
-        data: Data.map(e=>e.num_students_with_skill),
-        // data: Data,
-        backgroundColor: "blue",
-        borderRadius: "5px",
-      },
-    ],
-  };
-
   return (
-    <div className="col-lg-6">
-      <Bar options={options} data={data} className="col-lg-12" />
-    </div>
+    <PieChart width={400} height={400}>
+      <Pie
+        data={clg}
+        cx={200}
+        cy={200}
+        innerRadius={60}
+        outerRadius={80}
+        fill="#8884d8"
+        paddingAngle={5}
+        dataKey="value"
+      >
+        {clg.map((entry, index) => (
+          <Cell
+            key={`cell-${index}`}
+            fill={COLORS[index % COLORS.length]}
+            label={null}
+          />
+        ))}
+      </Pie>
+      <Tooltip />
+      <Legend />
+    </PieChart>
   );
-}
+};
 
-export default Barchart;
+export default DoughnutPieChart;
+
+// import React, { useEffect, useRef, useState } from "react";
+// import {
+//   Chart as ChartJS,
+//   ArcElement,
+//   LinearScale,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
+// import { Pie } from "react-chartjs-2";
+// import axios from "axios";
+
+// function Kgcas() {
+//   const chartRef = useRef(null);
+//   const chartInstance = useRef(null);
+
+//   const [kgcas, setKgcas] = useState("");
+//   const [kgkite, setKgkite] = useState("");
+//   const [other,setOther] = useState(0)
+
+//   useEffect(() => {
+//     axios.get(`http://localhost:5000/admin/college`).then((res) => {
+//       // console.log(res.data)
+//       setKgcas(res.data.msg[0].num_students);
+//       setKgkite(res.data.msg[1].num_students);
+//     });
+//   }, []);
+
+//   ChartJS.register(ArcElement, Tooltip, Legend);
+//   const data = {
+//     labels: ["KGCAS", "KITE", "OTHERS"],
+//     datasets: [
+//       {
+//         data: [kgcas, kgkite, other],
+//         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#8A2BE2"],
+//         hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#8A2BE2"],
+//       },
+//     ],
+//   };
+
+//   return (
+//     <>
+//       <div className="col-lg-6">
+//         <Pie data={data} className="col-lg-6" />
+//       </div>
+//     </>
+//   );
+// }
+
+// export default Kgcas;

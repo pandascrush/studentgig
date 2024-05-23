@@ -277,20 +277,20 @@ const StudentProjectDetails = async (req, res) => {
 
   const sql = `
   SELECT 
-    p.project_id, 
-    p.project_name, 
-    p.description AS project_description, 
-    p.status_id, 
-    p.created_at, 
-    p.expiry_date,
-    s.skill_id, 
-    s.skill_name
+  p.project_id, 
+  p.project_name, 
+  p.description AS project_description, 
+  p.status_id, 
+  p.created_at, 
+  p.expiry_date,
+  s.skill_id, 
+  s.skill_name
 FROM 
-    projects p
+  projects p
 LEFT JOIN 
-    skills s ON p.project_id = s.skill_id
+  skills s ON p.stack = s.skill_id
 WHERE 
-    p.project_id = ?;
+  p.project_id = ?;
   `;
 
   db.query(sql, [id], (err, result) => {

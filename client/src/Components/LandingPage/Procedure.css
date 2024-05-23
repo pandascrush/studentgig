@@ -35,13 +35,13 @@
     padding: 10px;
     text-align: center;
   }
-  img{
+.procedureim{
     max-height: 400px !important;
     max-width: 400px !important;
-  }
-  #smd{
+}
+#smd{
   display: none;
-  }
+}
   @media (max-width: 1023px) {
     #smd {
       display: block;
@@ -55,7 +55,7 @@
     width:810px;
     height: 600px;
     margin: 15px 0 0 2px;
-    background: url("../src/assets/How\ it\ works\ image.png")
+    background: url("../Assets//How\ it\ works\ image.png")
       no-repeat;  
   } 
   

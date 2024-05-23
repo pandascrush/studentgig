@@ -1,27 +1,33 @@
 import React from "react";
-import Sidebar from "./Sidebar";
-import Barchart from "./Barchart";
 import Kgcas from "./Progress";
 import { AdminMenu } from "./AdminMenu";
 import MainContent from "./MainContent";
-import { useParams } from "react-router-dom";
 import StudentsData from "./StudentsData";
 import { Addproject } from "./addproject";
 import Projects from "./Projects";
 import BitConfirm from "./BitConfirm";
+import DoughnutPieChart from "./Barchart";
+import styles from "./Dash.module.css";
 
 function Dash() {
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">
+      <div className="container-fluid vh-100">
+        <div className="row align-items-center justify-content-center h-100">
           <div className="col-lg-2">
             <AdminMenu />
           </div>
-          <div className="col-lg-10">
-            {/* <MainContent/> */}
-            <Barchart />
-            <Kgcas />
+          <div className="col-lg-5">
+            <div className={styles.chartContainer}>
+              <h1>College</h1>
+              <DoughnutPieChart />
+            </div>
+          </div>
+          <div className="col-lg-5">
+            <div className={styles.chartContainer}>
+              <h1>Skill</h1>
+              <Kgcas />
+            </div>
           </div>
         </div>
       </div>

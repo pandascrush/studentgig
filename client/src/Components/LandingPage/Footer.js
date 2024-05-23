@@ -1,6 +1,6 @@
 import React from 'react'
 import "./Footer.css"
-import footimg  from "../src/assets/web 1-01 1.png"
+import footimg  from "../Assets/web 1-01 1.png"
 
 function Footer() {
     return (
@@ -8,7 +8,7 @@ function Footer() {
         <div className='container-fluid footer-body'>
             <div className='row pt-5 pb-5'>
                 <div className='col-sm-12 col-lg-4'>
-                <img src={footimg} id='footim'/> 
+                <img src={footimg} id='footim' alt="Loading"/> 
                 </div>
              <div className='col-lg-2'>
 

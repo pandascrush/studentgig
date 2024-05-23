@@ -1,9 +1,9 @@
 import React from "react";
 import "./Concept.css";
-import empowermentim from "../src/assets/Rectangle 19.png";
-import integrityim from "../src/assets/Rectangle 16.png";
-import innovationim from "../src/assets/Rectangle 20.png";
-import communityim from "../src/assets/Rectangle 18.png";
+import empowermentim from "../Assets/Rectangle 19.png";
+import integrityim from "../Assets/Rectangle 16.png";
+import innovationim from "../Assets/Rectangle 20.png";
+import communityim from "../Assets/Rectangle 18.png";
 
 function Concept() {
   return (
@@ -13,7 +13,7 @@ function Concept() {
 
         <div className="row no-gutters ">
           <div className="col d-flex box2 rounded-1 part1" id="b1">
-            <img src={empowermentim} className="boxim" />
+            <img src={empowermentim} className="boxim" alt="Loading" />
             <div>
               <h3 className="text-center">Empowerment</h3>
               <p>
@@ -31,14 +31,14 @@ function Concept() {
                 providing opportunities that challenge and inspire.
               </p>
             </div>
-            <img src={innovationim} className="boxim" />
+            <img src={innovationim} className="boxim" alt="Loading" />
           </div>
         </div>
 
         {/* DEMO */}
         <div className="row mb-5">
           <div className="col d-flex box2 rounded-1">
-            <img src={integrityim} className="boxim" />
+            <img src={integrityim} className="boxim"  alt="Loading"/>
             <div>
               <h3 className="text-center">Integrity</h3>
               <p>
@@ -56,7 +56,7 @@ function Concept() {
                 professionals can collaborate and grow together.
               </p>
             </div>
-            <img src={communityim} className="boxim" />
+            <img src={communityim} className="boxim" alt="Loading" />
           </div>
         </div>
       </div>

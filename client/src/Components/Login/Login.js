@@ -59,10 +59,10 @@ export function Login() {
   };
   return (
     <>
-      <div className="container-fluid padd">
-        <div className="row padd">
+      <div className="container-fluid">
+        <div className="row">
           <div className="col-lg-6 ">
-            <img src={loginimage} className="container" alt="Loading" />
+            <img src={loginimage} alt="Loading" />
           </div>
 
           <div className="col-lg-6 p-5">

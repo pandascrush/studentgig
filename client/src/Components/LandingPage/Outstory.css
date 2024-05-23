@@ -1,0 +1,40 @@
+.waveimg {
+    background: url("../Assets/Group\ 5.png") no-repeat center center;
+    background-size: 100% 60%;    
+} 
+.container-fluid1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+.storytext {
+    font-size: 2em;
+    margin-bottom: 20px;
+    font-weight: 400;
+    text-align: center;
+}
+  
+.card {
+    max-width: 500px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 2px 2px 8px 1px black !important;
+    border-radius: 8px;
+    margin: 0 auto;
+    text-align: left;
+    margin-bottom: 100px;
+    padding: 15px;
+  }
+  
+  /* Responsive styles */
+@media (max-width: 768px) {
+    .storytext {
+      font-size: 1.5em;
+    }
+    .card {
+      padding: 15px;
+    }
+  }

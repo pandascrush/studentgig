@@ -1,33 +1,45 @@
 import React from 'react'
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Logoim from '../src/assets/293 x 267-01 1.png';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import Logoim from '../Assets/293 x 267-01 1.png';
 import "./Navbar.css";
+import { Link } from 'react-router-dom';
+
 const AppBar = () => {
     return (
         <>
-            <Navbar className='navcontent sticky-top' expand="lg" >
-                <Container>
-                    <Navbar.Brand href="#home"><img src={Logoim} className='logim' /></Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav" className='justify-content-center'>
-                        <Nav>
-                            <Nav.Link href='#landing' className='fw-bold text-light'>HOME</Nav.Link>
-                            <Nav.Link href='#procedure' className='fw-bold text-light'>ABOUT</Nav.Link>
-                            <Nav.Link href='#our' className='fw-bold text-light' >STORY</Nav.Link>
-                            <Nav.Link href="#concept" className='fw-bold text-light'>EVOLUTION</Nav.Link>
-                            <Nav.Link href="#community" className='fw-bold text-light'>COMMUNITY</Nav.Link>
-                        </Nav>
-                        <Nav className='ms-auto'>
-                            <Nav.Link>
-                                <button className='btn btn-light rounded-1'>Login</button>
-                            </Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>  
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#landing">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#procedure">ABOUT</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#our">
+            STORY
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#concept">
+            EVOLUTION
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#community">
+            COMMUNITY
+          </a>
+        </li>
+      </ul>
+      <Link to={'/login'}>Login</Link>
+    </div>
+  </div>
+</nav> 
         </>
     )
 }

@@ -1,9 +1,9 @@
-*{
+/* *{
     margin: 0;
     padding: 0;
-}
-.background{
-    background-image: url("../src/assets/Rectangle\ 3.png");
+} */
+.background1{
+    background-image: url("../Assets/Rectangle\ 3.png");
     color: white;
     height: 100vh;
     width: 100vw;
@@ -20,7 +20,7 @@
 .newtext{
     color: #dbff00;
 }
-button{
+.startbutton{
     color: white;
     background-color: #348ABA;
     border: 2px solid white;

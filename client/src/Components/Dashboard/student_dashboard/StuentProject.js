@@ -58,12 +58,6 @@ function StudentProject() {
                   >
                     View
                   </Link>
-                  <Link
-                    to={`/detail/${project.project_id}`}
-                    className="btn btn-success"
-                  >
-                    View
-                  </Link>
                 </td>
                 <td>{project.formatted_expiry_date}</td>
               </tr>

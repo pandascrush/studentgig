@@ -34,7 +34,7 @@ const studentsCount = async (req, res) => {
 
 const filterCollegeStduents = (req, res) => {
   try {
-    const sql = `SELECT c.college_name, COUNT(s.student_id) AS num_students
+    const sql = `SELECT c.college_name as name, COUNT(s.student_id) AS value
     FROM students s
     JOIN colleges c ON s.college_id = c.college_id
     GROUP BY c.college_name`;
@@ -76,11 +76,8 @@ const addProjects = async (req, res) => {
   const sql =
     "insert into projects(project_name,description,stack,expiry_date,status_id)values(?,?,?,?,1)";
 
-<<<<<<< HEAD
   db.query(sql, [pname, pdes, skill, date], (err, result) => {
-=======
-  db.query(sql, [pname, pdes, skill,date], (err, result) => {
->>>>>>> 573160953d754583050b6b27aff0273e3a0d8e49
+
     if (err) {
       res.json({ msg: "db_error" });
       console.log(err);

@@ -93,23 +93,26 @@ const profileUpdation = async (req, res) => {
   const { id, git, des, url, skill } = req.body;
   const file = req.file;
 
-  if (!file) {
-    return res.status(400).send("No files were uploaded.");
+  // Check if file is not uploaded
+  if (!file || !file.path) {
+    console.log("No resume file uploaded. Continuing without resume.");
+  } else {
+    // Retrieve file metadata
+    const file1Filename = file.originalname;
+    const file1Path = file.path;
   }
 
-  // Retrieve file metadata
-  const file1Filename = file.originalname;
-  const file1Path = file.path;
-
   try {
+    // Update student with GitHub link and resume file path
     const sqlUpdateStudent =
-      "UPDATE students SET github_link=?, resume_file=? WHERE student_id=?";
-    db.query(sqlUpdateStudent, [git, file1Path, id], (err, result) => {
+      "UPDATE students SET github_link=? WHERE student_id=?";
+    db.query(sqlUpdateStudent, [git, id], (err, result) => {
       if (err) {
         console.error("Error updating student in the database: ", err);
         return res.status(500).send("Internal server error");
       }
 
+      // Check if skill already exists for this student
       const sqlCheckSkill =
         "SELECT * FROM student_skills WHERE student_id=? AND skill_id=?";
       db.query(sqlCheckSkill, [id, skill], (err, results) => {
@@ -122,6 +125,7 @@ const profileUpdation = async (req, res) => {
           // Entry already exists
           return res.status(400).send("Skill_already_exists_for_this_student");
         } else {
+          // Insert new skill for the student
           const sqlInsertSkill =
             "INSERT INTO student_skills(student_id, skill_id, skill_url, skill_description) VALUES (?, ?, ?, ?)";
           db.query(sqlInsertSkill, [id, skill, url, des], (err, result) => {
@@ -130,40 +134,51 @@ const profileUpdation = async (req, res) => {
               return res.status(500).json({ status: "error" });
             }
 
-            res.status(200).send("Files uploaded successfully");
+            res.status(200).send("Profile updated successfully");
           });
         }
       });
     });
   } catch (e) {
+    console.error("Error in profile updation: ", e);
     res.status(500).json({ msg: "db_error" });
   }
 };
 
+
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;
 
-  const file = req.file;
-  console.log(file);
+  let Filename = null;
+  let Pathname = null;
 
-  const Filename = file.filename;
-  const Pathname = file.path;
+  if (req.file) {
+    Filename = req.file.filename;
+    Pathname = req.file.path;
+  }
 
-  let sql =
-    "update students set name=?,email=?,password=?,degree=?,year=?,specialization=?,college_id=?, profile_photo=? where student_id=?";
-  db.query(
-    sql,
-    [Name, Email, Password, Degree, Year, Spl, coll, Filename, id],
-    (err, result) => {
-      if (err) {
-        console.log("error", err);
-        res.json({ status: false, msg: "error" });
-      } else {
-        res.json({ status: true, msg: "updated" });
-      }
+  let sql = "UPDATE students SET name=?, email=?, password=?, degree=?, year=?, specialization=?, college_id=?";
+  let values = [Name, Email, Password, Degree, Year, Spl, coll];
+
+  // If a file is provided, include the profile_photo field in the update statement
+  if (Filename) {
+    sql += ", profile_photo=?";
+    values.push(Filename);
+  }
+
+  sql += " WHERE student_id=?";
+  values.push(id);
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.log("error", err);
+      res.json({ status: false, msg: "error" });
+    } else {
+      res.json({ status: true, msg: "updated" });
     }
-  );
+  });
 };
+
 
 const getSingleProfile = async (req, res) => {
   const { id } = req.params;

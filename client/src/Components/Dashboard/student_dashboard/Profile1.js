@@ -8,6 +8,7 @@ import "../../../App.css";
 
 export default function Profile() {
   const { id } = useParams();
+  const decoded = atob(id);
 
   const [image, setImage] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("");
@@ -21,19 +22,22 @@ export default function Profile() {
   const [fileName, setFileName] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [githubError, setGithubError] = useState("");
+  const [skillError, setSkillError] = useState("");
+  const [urlError, setUrlError] = useState("");
+  const [generalError, setGeneralError] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/stu/getall/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/stu/getall/${decoded}`).then((res) => {
       setImage(res.data.result[0].profile_photo);
     });
-  }, [id]);
+  }, [decoded]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/stu/getdata/${decoded}`).then((res) => {
       setName(res.data.msg[0].name);
       setGithub(res.data.msg[0].github_link);
     });
-  }, [id]);
+  }, [decoded]);
 
   useEffect(() => {
     axios.get("http://localhost:5000/college/skill").then((res) => {
@@ -42,11 +46,11 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/stu/getSkill/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/stu/getSkill/${decoded}`).then((res) => {
       const skillNames = res.data.map((e) => e.skill_name);
       setSkillNames(skillNames);
     });
-  }, [id]);
+  }, [decoded]);
 
   const handleDrop = (event) => {
     event.preventDefault();
@@ -98,11 +102,25 @@ export default function Profile() {
       setGithubError("");
     }
 
+    if (!selectedSkill) {
+      setSkillError("Skill is required");
+      return;
+    } else {
+      setSkillError("");
+    }
+
+    if (!skillUrl) {
+      setUrlError("URL is required");
+      return;
+    } else {
+      setUrlError("");
+    }
+
     const formData = new FormData();
     formData.append("file2", selectedFile);
     formData.append("name", name);
     formData.append("git", github);
-    formData.append("id", id);
+    formData.append("id", decoded);
     formData.append("skill", selectedSkill);
     formData.append("url", skillUrl);
     formData.append("des", description);
@@ -119,13 +137,14 @@ export default function Profile() {
       }
     } catch (error) {
       console.error("Error uploading files: ", error);
+      setGeneralError("An error occurred during the upload. Please try again.");
     }
   };
 
   return (
     <div>
       <div className="background">
-        <h1 className="text-center text-white p-5 ">KGGL Gig</h1>
+        <h1 className="text-center text-white p-5">KGGL Gig</h1>
       </div>
       <div className="imgposition ms-5">
         <img
@@ -159,7 +178,9 @@ export default function Profile() {
               </div>
             </div>
             <h4>Add New Skill</h4>
-            <label htmlFor="skillSelect">Select your Skill</label>
+            <label htmlFor="skillSelect">
+              Select your Skill <span className="text-danger">*</span>
+            </label>
             <select
               className="my-3 border form-control"
               id="skillSelect"
@@ -173,9 +194,10 @@ export default function Profile() {
                 </option>
               ))}
             </select>
-
+            {skillError && <p className="text-danger">{skillError}</p>}
+            
             <label htmlFor="skillUrl">
-              Project GitHub URL (or Netlify link)
+              Project GitHub URL (or Netlify link) <span className="text-danger">*</span>
             </label>
             <input
               id="skillUrl"
@@ -185,7 +207,11 @@ export default function Profile() {
               value={skillUrl}
               onChange={(e) => setSkillUrl(e.target.value)}
             />
-            <label htmlFor="description">Project Description</label>
+            {urlError && <p className="text-danger">{urlError}</p>}
+            
+            <label htmlFor="description">
+              Project Description <span className="text-danger">*</span>
+            </label>
             <textarea
               id="description"
               rows="4"
@@ -195,15 +221,13 @@ export default function Profile() {
               value={description}
               onChange={handleDescriptionChange}
             />
-            {descriptionError && (
-              <p className="text-danger">{descriptionError}</p>
-            )}
+            {descriptionError && <p className="text-danger">{descriptionError}</p>}
           </div>
           <div className="col-sm-12 col-lg-6">
             <h4 className="ms-5 mb-3">GitHub Link</h4>
             <div className="ms-5">
               <label htmlFor="github" className="form-label">
-                Paste GitHub URL
+                Paste GitHub URL <span className="text-danger">*</span>
               </label>
               <input
                 id="github"
@@ -214,7 +238,7 @@ export default function Profile() {
                 onChange={(e) => {
                   setGithub(e.target.value);
                   if (!validateGithubUrl(e.target.value)) {
-                    setGithubError("Please entFer a valid GitHub URL");
+                    setGithubError("Please enter a valid GitHub URL");
                   } else {
                     setGithubError("");
                   }
@@ -267,6 +291,7 @@ export default function Profile() {
             >
               Submit
             </button>
+            {generalError && <p className="text-danger">{generalError}</p>}
           </div>
         </div>
       </div>

@@ -14,79 +14,93 @@ const StudentRegistration = async (req, res) => {
     skill,
   } = req.body;
 
-  const checkEmailQuery =
-    "SELECT COUNT(*) AS count FROM students WHERE email = ?";
-  db.query(checkEmailQuery, [email], (err, result) => {
-    if (err) {
-      res.send("db_error");
-    } else {
-      if (result[0].count > 0) {
-        return res.status(200).send("Email already exists");
+  try {
+    const checkEmailQuery =
+      "SELECT COUNT(*) AS count FROM students WHERE email = ?";
+    db.query(checkEmailQuery, [email], (err, result) => {
+      if (err) {
+        res.send("db_error");
       } else {
-        let registrationsql =
-          "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
-        db.query(
-          registrationsql,
-          [
-            name,
-            email,
-            password,
-            selectedCollege,
-            year,
-            skill,
-            selectedCategory,
-          ],
-          (error, result) => {
-            if (error) {
-              console.log("error", error);
-              res.json({ status: "error" });
-            } else {
-              res.json({ status: "inserted" });
+        if (result[0].count > 0) {
+          return res.status(200).send("Email already exists");
+        } else {
+          let registrationsql =
+            "insert into students(name,email,password,degree,year,specialization,college_id,role_id)values(?,?,?,?,?,?,?,1)";
+          db.query(
+            registrationsql,
+            [
+              name,
+              email,
+              password,
+              selectedCollege,
+              year,
+              skill,
+              selectedCategory,
+            ],
+            (error, result) => {
+              if (error) {
+                console.log("error", error);
+                res.json({ status: "error" });
+              } else {
+                res.json({ status: "inserted" });
+              }
             }
-          }
-        );
+          );
+        }
       }
-    }
-  });
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const StudentLogin = async (req, res) => {
   const { email, password } = req.body;
 
-  let loginsql = "select * from students where email=?";
-  db.query(loginsql, [email], (error, result) => {
-    if (error) {
-      res.json({ status: false, msg: err });
-    } else if (result.length > 0) {
-      let dbpassword = result[0].password;
-      let id = result[0].student_id;
-      let role = result[0].role_id;
-      let name = result[0].name;
+  try {
+    let loginsql = "select * from students where email=?";
+    db.query(loginsql, [email], (error, result) => {
+      if (error) {
+        res.json({ status: false, msg: err });
+      } else if (result.length > 0) {
+        let dbpassword = result[0].password;
+        let id = result[0].student_id;
+        let role = result[0].role_id;
+        let name = result[0].name;
 
-      if (dbpassword === password) {
-        const token = jwt.sign({ user: id }, "secretkey", { expiresIn: "1d" });
-        res.cookie("accessToken", token, { httpOnly: true });
-        res.json({ status: "user", id: id, role: role, name: name });
+        if (dbpassword === password) {
+          const token = jwt.sign({ user: id }, "secretkey", {
+            expiresIn: "1d",
+          });
+          res.cookie("accessToken", token, { httpOnly: true, sameSite: true });
+          res.json({ status: "user", id: id, role: role, name: name });
+        } else {
+          res.json({ msg: "invalid_password" });
+        }
       } else {
-        res.json({ msg: "invalid_password" });
+        res.json({ msg: "not_a_user" });
       }
-    } else {
-      res.json({ msg: "not_a_user" });
-    }
-  });
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const GetSingleStudentData = async (req, res) => {
   const { student_id } = req.params;
 
-  let getdata = "select * from students where student_id=?";
-  db.query(getdata, [student_id], (error, result) => {
-    if (error) {
-      res.json({ msg: "error", status: false });
-    } else {
-      res.json({ status: true, msg: result });
-    }
-  });
+  try {
+    let getdata = "select * from students where student_id=?";
+    db.query(getdata, [student_id], (error, result) => {
+      if (error) {
+        res.json({ msg: "error", status: false });
+      } else {
+        res.json({ status: true, msg: result });
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const profileUpdation = async (req, res) => {
@@ -109,7 +123,7 @@ const profileUpdation = async (req, res) => {
     db.query(sqlUpdateStudent, [git, id], (err, result) => {
       if (err) {
         console.error("Error updating student in the database: ", err);
-        return res.status(500).send("Internal server error");
+        return res.status(500).send("Internal server error_db");
       }
 
       // Check if skill already exists for this student
@@ -141,70 +155,77 @@ const profileUpdation = async (req, res) => {
     });
   } catch (e) {
     console.error("Error in profile updation: ", e);
-    res.status(500).json({ msg: "db_error" });
+    res.status(500).json({ msg: "student_catch_error" });
   }
 };
-
 
 const updateUserData = async (req, res) => {
   const { Name, Email, Password, Degree, Year, Spl, coll, id } = req.body;
 
   let Filename = null;
   let Pathname = null;
-
-  if (req.file) {
-    Filename = req.file.filename;
-    Pathname = req.file.path;
-  }
-
-  let sql = "UPDATE students SET name=?, email=?, password=?, degree=?, year=?, specialization=?, college_id=?";
-  let values = [Name, Email, Password, Degree, Year, Spl, coll];
-
-  // If a file is provided, include the profile_photo field in the update statement
-  if (Filename) {
-    sql += ", profile_photo=?";
-    values.push(Filename);
-  }
-
-  sql += " WHERE student_id=?";
-  values.push(id);
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.log("error", err);
-      res.json({ status: false, msg: "error" });
-    } else {
-      res.json({ status: true, msg: "updated" });
+  try {
+    if (req.file) {
+      Filename = req.file.filename;
+      Pathname = req.file.path;
     }
-  });
-};
 
+    let sql =
+      "UPDATE students SET name=?, email=?, password=?, degree=?, year=?, specialization=?, college_id=?";
+    let values = [Name, Email, Password, Degree, Year, Spl, coll];
+
+    // If a file is provided, include the profile_photo field in the update statement
+    if (Filename) {
+      sql += ", profile_photo=?";
+      values.push(Filename);
+    }
+
+    sql += " WHERE student_id=?";
+    values.push(id);
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.log("error", err);
+        res.json({ status: false, msg: "error" });
+      } else {
+        res.json({ status: true, msg: "updated" });
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
+};
 
 const getSingleProfile = async (req, res) => {
   const { id } = req.params;
-  // console.log(id);
 
-  let sql = "select * from students where student_id = ?";
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.log("error");
-    } else {
-      var photo = result[0].profile_photo;
-      photo = "hiii";
-      console.log(photo);
+  try {
+    let sql = "select * from students where student_id = ?";
+    db.query(sql, [id], (err, result) => {
+      if (err) {
+        console.log("error");
+        res.send(err);
+      } else {
+        var photo = result[0].profile_photo;
+        // photo = "https://iconape.com/wp-content/png_logo_vector/avatar-4.png";
+        photo = "hi";
 
-      const __dirname = path.resolve();
-      // res.sendFile(path.join(__dirname, photo));
-      let img = path.join(__dirname, photo);
-      res.send({ result, img });
-    }
-  });
+        const __dirname = path.resolve();
+        // res.sendFile(path.join(__dirname, photo));
+        let img = path.join(__dirname, photo);
+        res.send({ result, img });
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const getStudentSkills = async (req, res) => {
   const { id } = req.params;
 
-  const sql = `SELECT 
+  try {
+    const sql = `SELECT 
   s.skill_name
 FROM 
   skills s
@@ -214,83 +235,94 @@ ON
   s.skill_id = ss.skill_id
 WHERE 
   ss.student_id = ?`;
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
-    }
-  });
+    db.query(sql, [id], (err, result) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const ForgotPassword = async (req, res) => {
   const { Email } = req.body;
-  console.log(Email);
+  //console.log(Email);
 
-  const sql = `SELECT * FROM students WHERE email = ?`;
-  db.query(sql, [Email], (err, result) => {
-    if (err) {
-      res.send(err);
-    } else {
-      const id = result[0].student_id;
-      const token = jwt.sign({ id: id }, "secretkey", {
-        expiresIn: "5m",
-      });
+  try {
+    const sql = `SELECT * FROM students WHERE email = ?`;
+    db.query(sql, [Email], (err, result) => {
+      if (err) {
+        res.send(err);
+      } else {
+        const id = result[0].student_id;
+        const token = jwt.sign({ id: id }, "secretkey", {
+          expiresIn: "5m",
+        });
 
-      var transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "sivaranji5670@gmail.com",
-          pass: "zicd vrfo zxbs jsfb ",
-        },
-      });
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "sivaranji5670@gmail.com",
+            pass: "zicd vrfo zxbs jsfb ",
+          },
+        });
 
-      const text = `http://localhost:3000/reset/${token}`;
+        const text = `http://localhost:3000/reset/${token}`;
 
-      var mailOptions = {
-        from: "sivaranji5670@gmail.com",
-        to: Email,
-        subject: "Regarding Reset Password",
-        html: `<h1>Reset Password Link</h1>
+        var mailOptions = {
+          from: "sivaranji5670@gmail.com",
+          to: Email,
+          subject: "Regarding Reset Password",
+          html: `<h1>Reset Password Link</h1>
         <p>Password reset refers to the process of changing or recovering a forgotten password for a user account in an organization's system</p>
         <h2>${text}</h2>`,
-      };
+        };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
-      res.send("mail_sended");
-    }
-  });
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
+        res.send("mail_sended");
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const ResetPassword = async (req, res) => {
   const { token } = req.params;
   const { Password } = req.body;
 
-  const verified = jwt.verify(token, "secretkey");
-  const userId = verified.id;
+  try {
+    const verified = jwt.verify(token, "secretkey");
+    const userId = verified.id;
 
-  const sql = `UPDATE students
+    const sql = `UPDATE students
   SET password = ?
   WHERE student_id = ?`;
-  db.query(sql, [Password, userId], (err, result) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send("password_updated");
-    }
-  });
+    db.query(sql, [Password, userId], (err, result) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send("password_updated");
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const StudentProjectDetails = async (req, res) => {
   const { id } = req.params;
-
-  const sql = `
+  try {
+    const sql = `
   SELECT 
   p.project_id, 
   p.project_name, 
@@ -308,13 +340,16 @@ WHERE
   p.project_id = ?;
   `;
 
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      res.send("db_error");
-    } else {
-      res.send(result);
-    }
-  });
+    db.query(sql, [id], (err, result) => {
+      if (err) {
+        res.send("db_error");
+      } else {
+        res.send(result);
+      }
+    });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 const Verify = async (req, res) => {
@@ -322,8 +357,12 @@ const Verify = async (req, res) => {
 };
 
 const Logout = async (req, res) => {
-  res.clearCookie("accessToken");
-  res.json({ status: true, msg: "logout" });
+  try {
+    res.clearCookie("accessToken");
+    res.json({ status: true, msg: "logout" });
+  } catch (e) {
+    res.send("student_catch_error");
+  }
 };
 
 export {
@@ -338,5 +377,5 @@ export {
   getStudentSkills,
   ForgotPassword,
   ResetPassword,
-  StudentProjectDetails
+  StudentProjectDetails,
 };

@@ -66,7 +66,7 @@ function Projects() {
           <div className="project-details">
             <div className="d-flex justify-content-between">
               <h2>{val.project_name}</h2>
-              <Link className="text-dark" to={`/bit/${val.project_id}`}>
+              <Link className="text-dark" to={`/bit/${btoa(val.project_id)}`}>
                 <div
                   className="notification-icon"
                   style={styles.notificationIcon}

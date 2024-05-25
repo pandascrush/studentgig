@@ -33,10 +33,10 @@ export function Login() {
 
             // alert(id)
             if(role===1){
-                nav(`/student/${id}`)
+                nav(`/student/${btoa(id)}`)
             }
             else if(role===2){
-                nav(`/manager/${id}`)
+                nav(`/manager/${btoa(id)}`)
             }
             else if(role===3){
                 nav(`/bdm/${id}`)

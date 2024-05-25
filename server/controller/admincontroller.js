@@ -13,7 +13,7 @@ const studentsData = async (req, res) => {
       }
     });
   } catch (err) {
-    res.json({ msg: "error" });
+    res.json({ msg: "admin_error" });
   }
 };
 
@@ -29,7 +29,7 @@ const studentsCount = async (req, res) => {
       }
     });
   } catch (err) {
-    res.json({ msg: "error" });
+    res.json({ msg: "admin_error" });
   }
 };
 
@@ -48,7 +48,7 @@ const filterCollegeStduents = (req, res) => {
       }
     });
   } catch (err) {
-    res.json({ msg: "error" });
+    res.json({ msg: "admin_error" });
   }
 };
 
@@ -61,65 +61,78 @@ const filterStudentSkills = async (req, res) => {
 
     db.query(sql, (err, result) => {
       if (err) {
-        res.json({ msg: "error" });
+        res.json({ msg: "db_error" });
       } else {
         res.json({ result });
       }
     });
   } catch (e) {
-    res.json({ msg: "db_error" });
+    res.json({ msg: "admin_error" });
   }
 };
 
 const addProjects = async (req, res) => {
   const { pname, pdes, skill, date } = req.body;
 
-  const sql =
-    "insert into projects(project_name,description,stack,expiry_date,status_id)values(?,?,?,?,1)";
+  try {
+    const sql =
+      "insert into projects(project_name,description,stack,expiry_date,status_id)values(?,?,?,?,1)";
 
-  db.query(sql, [pname, pdes, skill, date], (err, result) => {
-    if (err) {
-      res.json({ msg: "db_error" });
-      console.log(err);
-    } else {
-      res.json({ msg: "added" });
-    }
-  });
+    db.query(sql, [pname, pdes, skill, date], (err, result) => {
+      if (err) {
+        res.json({ msg: "db_error" });
+        console.log(err);
+      } else {
+        res.json({ msg: "added" });
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const skillBasedProjects = async (req, res) => {
   const { id } = req.params;
 
-  const sql = `SELECT p.project_id, p.project_name, p.description, p.expiry_date, p.created_at
+  try {
+    const sql = `SELECT p.project_id, p.project_name, p.description, p.expiry_date, p.created_at
   FROM projects p
   JOIN student_skills ss ON p.stack = ss.skill_id
   WHERE ss.student_id = ?`;
 
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      res.json({ msg: "db_error" });
-    } else {
-      res.json({ result });
-    }
-  });
+    db.query(sql, [id], (err, result) => {
+      if (err) {
+        res.json({ msg: "db_error" });
+      } else {
+        res.json({ result });
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const studentBitInfo = async (req, res) => {
   const { stu_id, pro_id } = req.body;
 
-  const sql = `INSERT INTO bit (student_id, project_id) VALUES(?,?)`;
+  try {
+    const sql = `INSERT INTO bit (student_id, project_id) VALUES(?,?)`;
 
-  db.query(sql, [stu_id, pro_id], (err, result) => {
-    if (err) {
-      res.send("query_error");
-    } else {
-      res.send("bit_added");
-    }
-  });
+    db.query(sql, [stu_id, pro_id], (err, result) => {
+      if (err) {
+        res.send("query_error");
+      } else {
+        res.send("bit_added");
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const getAllProjects = async (req, res) => {
-  const sql = `SELECT 
+  try {
+    const sql = `SELECT 
   p.project_id,
   p.project_name,
   p.description,
@@ -134,76 +147,87 @@ LEFT JOIN
 GROUP BY 
   p.project_id, p.project_name;`;
 
-  db.query(sql, (err, result) => {
-    if (err) {
-      res.send("db_error");
-    } else {
-      res.send(result);
-    }
-  });
+    db.query(sql, (err, result) => {
+      if (err) {
+        res.send("db_error");
+      } else {
+        res.send(result);
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const getBitInfo = async (req, res) => {
-  const sql = `SELECT project_id, COUNT(*) AS count
+  try {
+    const sql = `SELECT project_id, COUNT(*) AS count
   FROM bit
   GROUP BY project_id;`;
 
-  db.query(sql, (err, result) => {
-    if (err) {
-      res.send("db_error");
-    } else {
-      res.send(result);
-    }
-  });
+    db.query(sql, (err, result) => {
+      if (err) {
+        res.send("db_error");
+      } else {
+        res.send(result);
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const bittedInfo = async (req, res) => {
   const { id } = req.params;
-
-  const sql = `SELECT p.project_id,p.project_name,b.bit_id, b.student_id,s.name AS student_name,s.email,s.college_id, c.college_name, b.datetime, b.bit_status_id
+  try {
+    const sql = `SELECT p.project_id,p.project_name,b.bit_id, b.student_id,s.name AS student_name,s.email,s.college_id, c.college_name, b.datetime, b.bit_status_id
   FROM projects p
   JOIN bit b ON p.project_id = b.project_id
   JOIN students s ON b.student_id = s.student_id
   JOIN colleges c ON s.college_id = c.college_id
   WHERE p.project_id = ?`;
 
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      res.send("db_error");
-    } else {
-      res.send(result);
-    }
-  });
+    db.query(sql, [id], (err, result) => {
+      if (err) {
+        res.send("db_error");
+      } else {
+        res.send(result);
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 const acceptBitting = async (req, res) => {
   const { stuid, proid } = req.params;
   const { email } = req.body;
 
-  const sql = `UPDATE bit
+  try {
+    const sql = `UPDATE bit
   SET bit_status_id = CASE
       WHEN student_id = ? THEN 1 
       ELSE 2 
   END
   WHERE project_id = ?`;
 
-  db.query(sql, [stuid, proid], (err, result) => {
-    if (err) {
-      res.send("dB_error", err);
-    } else {
-      var transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "sivaranji5670@gmail.com",
-          pass: "zicd vrfo zxbs jsfb ",
-        },
-      });
+    db.query(sql, [stuid, proid], (err, result) => {
+      if (err) {
+        res.send("dB_error", err);
+      } else {
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "sivaranji5670@gmail.com",
+            pass: "zicd vrfo zxbs jsfb ",
+          },
+        });
 
-      var mailOptions = {
-        from: "sivaranji5670@gmail.com",
-        to: email,
-        subject: "Confirmation msg",
-        html: `<!DOCTYPE html>
+        var mailOptions = {
+          from: "sivaranji5670@gmail.com",
+          to: email,
+          subject: "Confirmation msg",
+          html: `<!DOCTYPE html>
           <html>
           <head>
               <style>
@@ -258,25 +282,25 @@ const acceptBitting = async (req, res) => {
               </div>
           </body>
           </html>`,
-      };
+        };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
 
-      const sql = `DELETE FROM bit
+        const sql = `DELETE FROM bit
       WHERE bit_status_id = 2
         AND project_id = ?`;
 
-      db.query(sql, [proid], (err, result) => {
-        if (err) {
-          res.send("sub_query_error");
-        } else {
-          const sql = `UPDATE projects
+        db.query(sql, [proid], (err, result) => {
+          if (err) {
+            res.send("sub_query_error");
+          } else {
+            const sql = `UPDATE projects
           SET status_id = (SELECT status_id FROM status WHERE status = 'assigned')
           WHERE project_id = ?
           AND EXISTS (
@@ -284,19 +308,21 @@ const acceptBitting = async (req, res) => {
               FROM bit
               WHERE project_id = ?
               AND bit_status_id = 1
-          );`
-          db.query(sql,[proid,proid],(err,result)=>{
-            if(err){
-              res.send("this_is_inner_most_query_error")
-            }
-            else{
-              res.send("updated")
-            }
-          })
-        }
-      });
-    }
-  });
+          );`;
+            db.query(sql, [proid, proid], (err, result) => {
+              if (err) {
+                res.send("this_is_inner_most_query_error");
+              } else {
+                res.send("updated");
+              }
+            });
+          }
+        });
+      }
+    });
+  } catch (e) {
+    res.send("admin_error");
+  }
 };
 
 export {

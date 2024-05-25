@@ -7,7 +7,8 @@ import axios from "axios";
 
 function ProfileUpdate() {
   const { id } = useParams();
-
+  const decoded = atob(id)
+  
   const nav = useNavigate()
 
   const [Name, setName] = useState("");
@@ -19,7 +20,7 @@ function ProfileUpdate() {
   const [coll, setColl] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/stu/getdata/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/stu/getdata/${decoded}`).then((res) => {
       // console.log(res.data.msg[0].name)
       let result = res.data.msg[0];
       setName(result.name);
@@ -30,7 +31,7 @@ function ProfileUpdate() {
       setSpl(result.specialization);
       setColl(result.college_id);
     });
-  }, []);
+  }, [decoded]);
 
   const [college, setCollege] = useState([]);
   useEffect(() => {
@@ -58,7 +59,7 @@ function ProfileUpdate() {
     formData.append("Year", Year);
     formData.append("Spl", Spl);
     formData.append("coll", coll);
-    formData.append("id", id);
+    formData.append("id", decoded);
     formData.append("file", file1);
 
     try {
@@ -68,7 +69,7 @@ function ProfileUpdate() {
           console.log(res)
           if(res.data.status){
             alert("updated")
-            nav(`/profile/${id}`)
+            nav(`/profile/${btoa(id)}`)
           }
         });
     } catch (e) {
@@ -191,7 +192,7 @@ function ProfileUpdate() {
           <div class="col-lg-3 col-md-2"></div>
         </div>
         <div className="col-lg-1 p-5 d-none d-lg-block">
-          <Link to="/">
+          <Link to="/login">
             <FontAwesomeIcon icon={faXmark} className="iconsize" />
           </Link>
         </div>

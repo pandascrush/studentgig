@@ -5,10 +5,12 @@ import "./Studentmenu.css";
 
 function ProjectDeatails() {
   const { id, proid } = useParams();
+  const decoded = atob(id)
+  const decodedProject = atob(proid)
 
   const [projectDetails, setProjectDetails] = useState([]);
   useEffect(() => {
-    axios.get(`http://localhost:5000/stu/prodeatil/${proid}`).then((res) => {
+    axios.get(`http://localhost:5000/stu/prodeatil/${decodedProject}`).then((res) => {
       console.log(res.data);
       setProjectDetails(
         res.data.map((project) => ({
@@ -17,7 +19,7 @@ function ProjectDeatails() {
         }))
       );
     });
-  }, [proid]);
+  }, [decodedProject]);
 
   const formatExpiryDate = (expiryDate) => {
     let date = new Date(expiryDate);
@@ -53,7 +55,7 @@ function ProjectDeatails() {
             <p>Expiry Date: {val.formatted_expiry_date}</p>
             <p>Stack Name: {val.skill_name}</p>
             <button
-              onClick={() => handleClick(id, val.project_id)}
+              onClick={() => handleClick(decoded, val.project_id)}
               className="edit-button"
             >
               Bit

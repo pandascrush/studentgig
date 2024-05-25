@@ -4,10 +4,11 @@ import { useParams } from "react-router-dom";
 
 function BitConfirm() {
   const { id } = useParams();
+  const decoded = atob(id)
 
   const [bitInfo, setBitInfo] = useState([]);
   useEffect(() => {
-    axios.get(`http://localhost:5000/admin/bittedDetail/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/admin/bittedDetail/${decoded}`).then((res) => {
       console.log(res.data);
       setBitInfo(res.data);
     });

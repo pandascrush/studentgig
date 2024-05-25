@@ -4,10 +4,12 @@ import { Link, useParams } from "react-router-dom";
 
 function StudentProject() {
   const { id } = useParams();
+  const decoded = atob(id)
+  // console.log(decoded,id);
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/admin/basproject/${id}`).then((res) => {
+    axios.get(`http://localhost:5000/admin/basproject/${decoded}`).then((res) => {
       setProjects(
         res.data.result.map((project) => ({
           ...project,
@@ -15,7 +17,7 @@ function StudentProject() {
         }))
       );
     });
-  }, [id]);
+  }, [decoded]);
 
   // Function to format the expiry date
   const formatExpiryDate = (expiryDate) => {
@@ -53,7 +55,7 @@ function StudentProject() {
                 <td>{project.project_name}</td>
                 <td>
                   <Link
-                    to={`/detail/${id}/${project.project_id}`}
+                    to={`/detail/${id}/${btoa(project.project_id)}`}
                     className="btn btn-success"
                   >
                     View

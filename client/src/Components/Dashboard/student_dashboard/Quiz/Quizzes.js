@@ -101,7 +101,7 @@ function Quizzes() {
 
   return (
     <>
-      <div className="quizpage container-fluid m-0 p-0">
+      <div className="quizpage container-fluid m-0 p-0"><span></span>
         <nav className="navbar navbar-expand-sm bg-body-tertiary">
           <div className="container-fluid text-center">
             <h1 className="mx-auto">ENTRY TEST</h1>

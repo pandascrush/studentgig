@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Login } from "./Components/Login/Login";
 import { Registration } from "./Components/Registration/Registration";
 import {
+  StudentQuizz,
   Studentdashboard,
   Studentprofile,
   StudentprojectDeatil,
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" Component={HomePage} />
           <Route path="/login" Component={Login} />
           <Route path="/reg" Component={Registration} />
+          <Route path="/student/:id/:name" Component={StudentQuizz} />
           <Route path="/student/:id" Component={Studentdashboard} />
           <Route path="/profile/:id" Component={Studentprofile} />
           <Route path="/update/:id" Component={ProfileUpdate} />

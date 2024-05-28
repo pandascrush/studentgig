@@ -9,6 +9,7 @@ import "../../../App.css";
 export default function Profile() {
   const { id } = useParams();
   const decoded = atob(id);
+  console.log(id, decoded);
 
   const [image, setImage] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("");

@@ -5,9 +5,11 @@ import { Link, useParams } from "react-router-dom";
 import logo from "../../Assets/KGGL.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ContextUser } from "./Context/context";
 
 export function StudentMenu() {
   var { id } = useParams();
+  const decoded = atob(id)
   const navigate = useNavigate();
 
   axios.defaults.withCredentials=true

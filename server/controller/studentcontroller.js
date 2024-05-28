@@ -352,6 +352,79 @@ WHERE
   }
 };
 
+const QuizzQuestions = async (req, res) => {
+  db.query("SELECT * FROM Questions", (error, results) => {
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(200).json(results);
+  });
+};
+
+const QuizzResults = async (req, res) => {
+  try {
+    const { student_name, quiz_attempts, questions, student_id } = req.body;
+
+    // Insert student if not exists, otherwise get the student ID
+    db.query(
+      `update students set quiz_attempts = quiz_attempts + ? where student_id = ?`,
+      [quiz_attempts,student_id],
+      (err, studentResult) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error inserting student");
+        }
+
+        // Calculate quiz score
+        const quizScore = questions.filter((q) => q.is_correct).length;
+
+        // Insert quiz attempt
+        db.query(
+          `INSERT INTO QuizAttempts (student_id, quiz_score) VALUES (?, ?)`,
+          [student_id, quizScore],
+          (err, quizResult) => {
+            if (err) {
+              return res.status(500).send("Error inserting quiz attempt");
+            }
+
+            const attempt_id = quizResult.insertId;
+
+            // Insert each question attempt
+            const questionAttempts = questions.map((q) => [
+              student_id,
+              q.question_id,
+              q.chosen_option,
+              q.is_correct,
+              1, // Assuming encounter_count starts at 1
+              attempt_id,
+            ]);
+
+            db.query(
+              `INSERT INTO StudentQuestionAttempts (student_id, question_id, chosen_option, is_correct, encounter_count, attempt_id) VALUES ?`,
+              [questionAttempts],
+              (err) => {
+                if (err) {
+                  return res
+                    .status(500)
+                    .send("Error inserting question attempts");
+                }
+
+                // Send the quiz score in the response
+                res.json({
+                  message: "Quiz data submitted successfully",
+                  quizScore,
+                });
+              }
+            );
+          }
+        );
+      }
+    );
+  } catch (error) {
+    console.error("Error in QuizzResults:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
 const Verify = async (req, res) => {
   res.json({ status: true, msg: "authorized" });
 };
@@ -378,4 +451,6 @@ export {
   ForgotPassword,
   ResetPassword,
   StudentProjectDetails,
+  QuizzQuestions,
+  QuizzResults,
 };

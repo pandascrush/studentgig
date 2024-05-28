@@ -1,0 +1,129 @@
+.quizpage {
+  font-family: "Anek Malayalam", sans-serif !important;
+  background-image: url("../../../Assets/Banner-01-01\ \(1\).png");
+  background-repeat: no-repeat;
+  background-size: 100% 100% !important;
+  background-position: center;
+  height: 100vh;
+  color: #080809;
+  margin: 0;
+  padding: 0px;
+}
+
+.cardhold {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.button2 {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button2:hover {
+  background-color: #0056b3;
+}
+
+.quiz-container {
+  padding: 10px;
+  background: #ffff;
+  border-radius: 6px;
+  margin-top: 100px;
+}
+
+.form-check-input {
+  border: 3px solid black !important;
+}
+.score {
+  font-weight: 500;
+  font-size: 32px;
+}
+
+/* status */
+.status-container {
+  /* min-width: 30%; */
+  padding: 20px;
+  background-color: #fff;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 4px 6px rgba(0, 0, 0, 0.12),
+    0 5px 15px rgba(0, 0, 0, 0.24);
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.question-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.question-box {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.question-box.completed {
+  background-color: #28a745; /* Green background for completed questions */
+  color: #fff;
+}
+
+@media (max-width: 500px) {
+  .quizpage {
+    background-image: url("../../../Assets/banner\ mobile-02.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100% !important;
+    background-position: center;
+  }
+}
+@media (min-width: 501px) and (max-width: 768px) {
+  .quizpage {
+    background-image: url("../../../Assets//tab\ view\ banner-03.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100% !important;
+    background-position: center;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .quizpage {
+    background-image: url("../../../Assets/Laptop\ banner-04.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100% !important;
+    background-position: center;
+  }
+}
+@media (min-width: 1025px) and (max-width: 1445px) {
+  .quizpage {
+    background-image: url("../../../Assets/big\ device-05.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100% !important;
+    background-position: center;
+  }
+}
+@media (min-width: 1446px) {
+  .quizpage {
+    background-image: url("../../../Assets/big\ device-06.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100% !important;
+    background-position: center;
+  }
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@100;200;300;400;500;600;700;800&display=swap");

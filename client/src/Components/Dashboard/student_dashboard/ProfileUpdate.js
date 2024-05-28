@@ -8,6 +8,7 @@ import axios from "axios";
 function ProfileUpdate() {
   const { id } = useParams();
   const decoded = atob(id)
+  console.log(id,decoded);
   
   const nav = useNavigate()
 
@@ -69,7 +70,7 @@ function ProfileUpdate() {
           console.log(res)
           if(res.data.status){
             alert("updated")
-            nav(`/profile/${btoa(id)}`)
+            nav(`/profile/${btoa(decoded)}`)
           }
         });
     } catch (e) {

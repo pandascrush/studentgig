@@ -30,10 +30,9 @@ export function Login() {
             // alert(role)
             var id=res.data.id;
             let name = res.data.name
-
             // alert(id)
             if(role===1){
-                nav(`/student/${btoa(id)}`)
+                nav(`/student/${btoa(id)}/${btoa(name)}`)
             }
             else if(role===2){
                 nav(`/manager/${btoa(id)}`)

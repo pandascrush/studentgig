@@ -99,6 +99,13 @@ export function AdminMenu() {
                     </a>
                   </Link>
                 </li>
+                <li class="nav-item">
+                  <Link to={`/quiz/${id}`}>
+                    <a class="nav-link" href="#">
+                      <i class="bi bi-people"></i> Add New Quizzes
+                    </a>
+                  </Link>
+                </li>
               </ul>
 
               <hr class="navbar-divider my-5 opacity-20" />

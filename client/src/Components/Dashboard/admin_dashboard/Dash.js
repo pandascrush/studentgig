@@ -8,6 +8,7 @@ import Projects from "./Projects";
 import BitConfirm from "./BitConfirm";
 import DoughnutPieChart from "./Barchart";
 import styles from "./Dash.module.css";
+import AddQuestion from "./AddQuestion";
 
 function Dash() {
   return (
@@ -107,6 +108,23 @@ export function DashBit() {
           </div>
           <div className="col-lg-10">
             <BitConfirm />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export function AddQuizzes() {
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-lg-2">
+            <AdminMenu />
+          </div>
+          <div className="col-lg-10">
+            <AddQuestion />
           </div>
         </div>
       </div>

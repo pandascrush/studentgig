@@ -49,3 +49,8 @@
     background-color: #0056b3;
   }
   
+
+  .landImage {
+    background: url("../../../Assets/Banner-01-01\ \(1\).png") ;
+    height: 100vh;
+  }

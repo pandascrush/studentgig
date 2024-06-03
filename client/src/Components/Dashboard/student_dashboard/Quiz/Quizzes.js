@@ -13,10 +13,19 @@ function Quizzes() {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [quizScore, setQuizScore] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+
+  const [easyCount, setEasyCount] = useState(0);
+  const [mediumCount, setMediumCount] = useState(0);
+  const [hardCount, setHardCount] = useState(0);
 
   useEffect(() => {
+    fetchQuestions(1); // Fetch easy level questions initially
+  }, []);
+
+  const fetchQuestions = (level) => {
     axios
-      .get("http://localhost:5000/stu/questions")
+      .get(`http://localhost:5000/stu/questions?level=${level}`)
       .then((res) => {
         const questionsWithParsedOptions = res.data.map((question) => ({
           ...question,
@@ -27,11 +36,54 @@ function Quizzes() {
       .catch((error) => {
         console.error("Error fetching questions:", error);
       });
-  }, []);
+  };
+
+  const handleOptionChange = (questionId, option) => {
+    setSelectedOptions({
+      ...selectedOptions,
+      [questionId]: option,
+    });
+
+    axios
+      .post("http://localhost:5000/stu/option-click", {
+        questionId,
+        selectedOption: option,
+        correctAnswersCount,
+      })
+      .then((response) => {
+        const { isCorrect, difficultyLevel } = response.data;
+        console.log(difficultyLevel);
+        
+        if (difficultyLevel === 1) {
+          if (isCorrect) {
+            setEasyCount(easyCount + 1);
+          }
+        }
+        if (difficultyLevel === 2 && easyCount >= 4) {
+          if (isCorrect) {
+            setMediumCount(mediumCount + 1);
+          }
+        }
+        if (difficultyLevel === 3 && mediumCount >= 3) {
+          if (isCorrect) {
+            setHardCount(hardCount + 1);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error handling option click:", error);
+      });
+  };
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      if (easyCount >= 4) {
+        fetchQuestions(2);
+      }
+      if (mediumCount >= 3) {
+        fetchQuestions(3);
+      }
     }
   };
 
@@ -41,21 +93,16 @@ function Quizzes() {
     }
   };
 
-  const handleOptionChange = (questionId, option) => {
-    setSelectedOptions({
-      ...selectedOptions,
-      [questionId]: option,
-    });
-  };
-
   const handleSubmit = () => {
     const data = {
       student_id: decoded,
       student_name: decodedName,
       quiz_attempts: 1,
+      totalScore : easyCount + mediumCount + hardCount,
       questions: questions.map((question) => ({
         question_id: question.question_id,
         chosen_option: selectedOptions[question.question_id] || null,
+        difficulty_level_id: question.difficulty_level_id,
         is_correct:
           selectedOptions[question.question_id] === question.correct_answer,
         correct_answer: question.correct_answer,
@@ -66,7 +113,7 @@ function Quizzes() {
       .post("http://localhost:5000/stu/compare-and-submit", data)
       .then((response) => {
         console.log("Data submitted successfully:", response.data);
-        setQuizScore(response.data.quizScore);
+        setQuizScore(response.data.totalScore);
         setIsSubmitted(true);
       })
       .catch((error) => {
@@ -101,7 +148,8 @@ function Quizzes() {
 
   return (
     <>
-      <div className="quizpage container-fluid m-0 p-0"><span></span>
+      <div className="quizpage container-fluid m-0 p-0">
+        <span></span>
         <nav className="navbar navbar-expand-sm bg-body-tertiary">
           <div className="container-fluid text-center">
             <h1 className="mx-auto">ENTRY TEST</h1>
@@ -182,26 +230,6 @@ function Quizzes() {
                     </div>
                   </>
                 )}
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-3 col-md-4">
-            <div className="status-container">
-              <h4>Status</h4>
-              <div className="question-status">
-                {questions.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`question-box ${
-                      selectedOptions[questions[index].question_id]
-                        ? "completed"
-                        : ""
-                    }`}
-                    onClick={() => handleQuestionClick(index)}
-                  >
-                    {index + 1}
-                  </div>
-                ))}
               </div>
             </div>
           </div>

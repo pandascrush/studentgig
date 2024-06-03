@@ -1,5 +1,6 @@
 import db from "../config/db.js";
 import nodemailer from "nodemailer";
+import { validationResult } from 'express-validator';
 
 const studentsData = async (req, res) => {
   try {
@@ -325,6 +326,45 @@ const acceptBitting = async (req, res) => {
   }
 };
 
+const addQuestion = async (req, res) => {
+  // Validate the incoming request data
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const {
+    question_text,
+    correct_answer,
+    options,
+    difficulty_level_id,
+    category_id,
+  } = req.body;
+
+  try {
+    const result = await db.query(
+      "INSERT INTO questions (question_text, correct_answer, options, difficulty_level_id, category_id) VALUES (?, ?, ?, ?, ?)",
+      [
+        question_text,
+        correct_answer,
+        JSON.stringify(options),
+        difficulty_level_id,
+        category_id,
+      ]
+    );
+
+    res
+      .status(201)
+      .json({
+        message: "Question added successfully",
+        questionId: result.insertId,
+      });
+  } catch (error) {
+    console.error("Error adding question:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   studentsData,
   studentsCount,
@@ -337,4 +377,5 @@ export {
   getBitInfo,
   bittedInfo,
   acceptBitting,
+  addQuestion
 };

@@ -3,7 +3,6 @@ import {
   ForgotPassword,
   GetSingleStudentData,
   Logout,
-  QuizzQuestions,
   QuizzResults,
   ResetPassword,
   StudentLogin,
@@ -13,6 +12,8 @@ import {
   getSingleProfile,
   getStudentSkills,
   profileUpdation,
+  studentDifficulty,
+  studentOptionClick,
   updateUserData,
 } from "../controller/studentcontroller.js";
 import upload from "../middleware/multer.js";
@@ -42,8 +43,11 @@ studentRouter.route("/auth").get(Verify);
 studentRouter.route("/logout").get(Logout);
 
 // Quizz
-studentRouter.route("/questions").get(QuizzQuestions);
+studentRouter.route("/questions").get(studentDifficulty);
 studentRouter.route("/compare-and-submit").post(QuizzResults);
+
+// difficulty based we can provide a questions
+studentRouter.route('/option-click').post(studentOptionClick)
 
 export { studentRouter };
 

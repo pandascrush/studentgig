@@ -352,34 +352,39 @@ WHERE
   }
 };
 
-const QuizzQuestions = async (req, res) => {
-  db.query("SELECT * FROM Questions", (error, results) => {
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(200).json(results);
-  });
-};
-
 const QuizzResults = async (req, res) => {
   try {
-    const { student_name, quiz_attempts, questions, student_id } = req.body;
+    const { student_name,totalScore, quiz_attempts, questions, student_id } = req.body;
 
-    // Insert student if not exists, otherwise get the student ID
+    // Update student's quiz attempts count
     db.query(
-      `update students set quiz_attempts = quiz_attempts + ? where student_id = ?`,
-      [quiz_attempts,student_id],
+      `UPDATE students SET quiz_attempts = quiz_attempts + ? WHERE student_id = ?`,
+      [quiz_attempts, student_id],
       (err, studentResult) => {
         if (err) {
           console.log(err);
-          return res.status(500).send("Error inserting student");
+          return res.status(500).send("Error updating student quiz attempts");
         }
 
-        // Calculate quiz score
-        const quizScore = questions.filter((q) => q.is_correct).length;
+        // Calculate scores for each difficulty level
+        let easyScore = 0;
+        let mediumScore = 0;
+        let hardScore = 0;
+
+        questions.forEach((q) => {
+          if (q.difficulty_level_id === 1 && q.is_correct) {
+            easyScore++;
+          } else if (q.difficulty_level_id === 2 && q.is_correct) {
+            mediumScore++;
+          } else if (q.difficulty_level_id === 3 && q.is_correct) {
+            hardScore++;
+          }
+        });
 
         // Insert quiz attempt
         db.query(
-          `INSERT INTO QuizAttempts (student_id, quiz_score) VALUES (?, ?)`,
-          [student_id, quizScore],
+          `INSERT INTO quizattempts (student_id, quiz_score) VALUES (?, ?)`,
+          [student_id, totalScore],
           (err, quizResult) => {
             if (err) {
               return res.status(500).send("Error inserting quiz attempt");
@@ -398,7 +403,7 @@ const QuizzResults = async (req, res) => {
             ]);
 
             db.query(
-              `INSERT INTO StudentQuestionAttempts (student_id, question_id, chosen_option, is_correct, encounter_count, attempt_id) VALUES ?`,
+              `INSERT INTO studentquestionattempts (student_id, question_id, chosen_option, is_correct, encounter_count, attempt_id) VALUES ?`,
               [questionAttempts],
               (err) => {
                 if (err) {
@@ -407,10 +412,10 @@ const QuizzResults = async (req, res) => {
                     .send("Error inserting question attempts");
                 }
 
-                // Send the quiz score in the response
+                // Send the total score in the response
                 res.json({
                   message: "Quiz data submitted successfully",
-                  quizScore,
+                  totalScore,
                 });
               }
             );
@@ -424,6 +429,50 @@ const QuizzResults = async (req, res) => {
   }
 };
 
+const studentDifficulty = async (req, res) => {
+  const level = req.query.level;
+  db.query(
+    "SELECT question_id, question_text, difficulty_level_id, options, correct_answer FROM questions WHERE difficulty_level_id = ? LIMIT 10",
+    [level],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching questions:", err);
+        return res.status(500).send("Error fetching questions");
+      }
+      res.json(results);
+    }
+  );
+};
+
+const studentOptionClick = async (req, res) => {
+  try {
+    const { questionId, selectedOption } = req.body;
+
+    // Fetch correct answer from the database
+    const query =
+      "SELECT correct_answer, difficulty_level_id FROM questions WHERE question_id = ?";
+    db.query(query, [questionId], (err, result) => {
+      if (err) {
+        console.error("Error fetching correct answer:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+
+      const { correct_answer, difficulty_level_id } = result[0];
+      const isCorrect = selectedOption === correct_answer;
+      const difficultyLevel = difficulty_level_id;
+      
+      // Send response indicating whether the selected option is correct and the difficulty level
+      res.json({ isCorrect, difficultyLevel });
+    });
+  } catch (error) {
+    console.error("Error handling option click:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const Verify = async (req, res) => {
   res.json({ status: true, msg: "authorized" });
@@ -451,6 +500,7 @@ export {
   ForgotPassword,
   ResetPassword,
   StudentProjectDetails,
-  QuizzQuestions,
   QuizzResults,
+  studentDifficulty,
+  studentOptionClick,
 };

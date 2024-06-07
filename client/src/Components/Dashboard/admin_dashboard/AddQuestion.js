@@ -1,5 +1,4 @@
-// AddQuestion.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./addQuestion.module.css";
 
@@ -9,6 +8,19 @@ function AddQuestion() {
   const [options, setOptions] = useState(["", "", "", ""]);
   const [difficultyLevelId, setDifficultyLevelId] = useState(1);
   const [categoryId, setCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch categories and subcategories from the database
+    axios.get("http://localhost:5000/admin/categories-and-subcategories")
+      .then(response => {
+        setCategories(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching categories and subcategories:", error);
+      });
+  }, []);
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -24,6 +36,7 @@ function AddQuestion() {
       options: options,
       difficulty_level_id: difficultyLevelId,
       category_id: categoryId ? parseInt(categoryId) : null,
+      sub_category_id: subCategoryId ? parseInt(subCategoryId) : null,
     };
 
     axios
@@ -36,6 +49,7 @@ function AddQuestion() {
         setOptions(["", "", "", ""]);
         setDifficultyLevelId(1);
         setCategoryId("");
+        setSubCategoryId("");
         if (response.data.message === "Question added successfully") {
           alert("Question Added Successfully");
         }
@@ -95,14 +109,41 @@ function AddQuestion() {
           </select>
         </div>
         <div className={styles.formGroup}>
-          <label>Category ID</label>
-          <input
-            type="number"
+          <label>Category</label>
+          <select
             className={styles.formControl}
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-          />
+            required
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.category_id} value={category.category_id}>
+                {category.category_name}
+              </option>
+            ))}
+          </select>
         </div>
+        {categoryId && (
+          <div className={styles.formGroup}>
+            <label>Subcategory</label>
+            <select
+              className={styles.formControl}
+              value={subCategoryId}
+              onChange={(e) => setSubCategoryId(e.target.value)}
+              required
+            >
+              <option value="">Select a subcategory</option>
+              {categories
+                .find((cat) => cat.category_id === parseInt(categoryId))
+                ?.subcategories.map((subCategory) => (
+                  <option key={subCategory.sub_category_id} value={subCategory.sub_category_id}>
+                    {subCategory.sub_category_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
         <button type="submit" className={styles.btn}>
           Add Question
         </button>

@@ -8,10 +8,10 @@ import axios from "axios";
 
 export function AdminMenu() {
   var { id } = useParams();
-  
+
   const navigate = useNavigate();
 
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = true;
   const handleLogout = () => {
     axios.get("http://localhost:5000/stu/logout").then((res) => {
       if (res.data.status) {
@@ -103,6 +103,13 @@ export function AdminMenu() {
                   <Link to={`/quiz/${id}`}>
                     <a class="nav-link" href="#">
                       <i class="bi bi-people"></i> Add New Quizzes
+                    </a>
+                  </Link>
+                </li>
+                <li class="nav-item">
+                  <Link to={`/assignquiz/${id}`}>
+                    <a class="nav-link" href="#">
+                      <i class="bi bi-people"></i> Quizz Assigning
                     </a>
                   </Link>
                 </li>

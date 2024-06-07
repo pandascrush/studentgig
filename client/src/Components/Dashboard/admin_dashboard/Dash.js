@@ -9,6 +9,7 @@ import BitConfirm from "./BitConfirm";
 import DoughnutPieChart from "./Barchart";
 import styles from "./Dash.module.css";
 import AddQuestion from "./AddQuestion";
+import QuizzAssign from "./QuizzAssign";
 
 function Dash() {
   return (
@@ -129,6 +130,21 @@ export function AddQuizzes() {
         </div>
       </div>
     </>
+  );
+}
+
+export function AssigningQuizz() {
+  return (
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-lg-2">
+          <AdminMenu />
+        </div>
+        <div className="col-lg-10">
+          <QuizzAssign />
+        </div>
+      </div>
+    </div>
   );
 }
 

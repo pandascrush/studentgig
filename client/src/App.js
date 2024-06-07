@@ -8,7 +8,7 @@ import {
   StudentprojectDeatil,
 } from "./Components/Dashboard/student_dashboard/Studentdashboard";
 import ProfileUpdate from "./Components/Dashboard/student_dashboard/ProfileUpdate";
-import Dash, {AddQuizzes, DashAllProjects, DashBit, Dashprofile, Dashproject, Dashstudent } from "./Components/Dashboard/admin_dashboard/Dash";
+import Dash, {AddQuizzes, AssigningQuizz, DashAllProjects, DashBit, Dashprofile, Dashproject, Dashstudent } from "./Components/Dashboard/admin_dashboard/Dash";
 import ForgotPassword from "./Components/Dashboard/Password/ForgotPassword";
 import ResetPassword from "./Components/Dashboard/Password/ResetPassword";
 import HomePage from "./Components/LandingPage/HomePage";
@@ -34,6 +34,7 @@ function App() {
           <Route path="/addproject/:id" Component={Dashproject}/>
           <Route path="/getprojects/:id" Component={DashAllProjects} />
           <Route path='/quiz/:id' Component={AddQuizzes} />
+          <Route path="/assignquiz/:id" Component={AssigningQuizz}/>
           {/*Forgot Password*/}
           <Route path="/forgot" Component={ForgotPassword} />
           <Route path="/reset/:token" Component={ResetPassword} />

@@ -4,14 +4,18 @@ import {
   addProjects,
   addQuestion,
   bittedInfo,
+  categories,
+  categoriesAndSub,
   filterCollegeStduents,
   filterStudentSkills,
   getAllProjects,
   getBitInfo,
+  questionCounting,
   skillBasedProjects,
   studentBitInfo,
   studentsCount,
   studentsData,
+  testAssign,
 } from "../controller/admincontroller.js";
 import { body } from 'express-validator'
 const adminRouter = express.Router();
@@ -29,6 +33,7 @@ adminRouter.route('/bittedDetail/:id').get(bittedInfo)
 
 adminRouter.route('/accept/:stuid/:proid').post(acceptBitting)
 
+// question, and quizz assigning
 adminRouter.post('/add-question',
 [
   body('question_text').isString().notEmpty(),
@@ -37,5 +42,9 @@ adminRouter.post('/add-question',
   body('difficulty_level_id').isInt({ min: 1, max: 3 }),
   body('category_id').optional().isInt(),
 ],addQuestion)
+adminRouter.route('/categories-and-subcategories').get(categoriesAndSub)
+adminRouter.route('/categories').get(categories)
+adminRouter.route('/questions/count').get(questionCounting)
+adminRouter.route('/assign-test').post(testAssign)
 
 export default adminRouter;

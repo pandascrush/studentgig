@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 import nodemailer from "nodemailer";
-import { validationResult } from 'express-validator';
+import { validationResult } from "express-validator";
 
 const studentsData = async (req, res) => {
   try {
@@ -353,16 +353,117 @@ const addQuestion = async (req, res) => {
       ]
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Question added successfully",
-        questionId: result.insertId,
-      });
+    res.status(201).json({
+      message: "Question added successfully",
+      questionId: result.insertId,
+    });
   } catch (error) {
     console.error("Error adding question:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+};
+
+const categoriesAndSub = async (req, res) => {
+  const sql = `
+    SELECT c.category_id, c.category_name, s.sub_category_id, s.sub_category_name
+    FROM categories c
+    LEFT JOIN subcategory s ON c.category_id = s.category_id
+    ORDER BY c.category_name, s.sub_category_name;
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const data = results.reduce((acc, row) => {
+      const category = acc.find((c) => c.category_id === row.category_id);
+      if (category) {
+        category.subcategories.push({
+          sub_category_id: row.sub_category_id,
+          sub_category_name: row.sub_category_name,
+        });
+      } else {
+        acc.push({
+          category_id: row.category_id,
+          category_name: row.category_name,
+          subcategories: row.sub_category_id
+            ? [
+                {
+                  sub_category_id: row.sub_category_id,
+                  sub_category_name: row.sub_category_name,
+                },
+              ]
+            : [],
+        });
+      }
+      return acc;
+    }, []);
+
+    res.json(data);
+  });
+};
+
+const categories = async (req, res) => {
+  db.query(
+    "SELECT category_id, category_name FROM categories",
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching categories:", err);
+        res.status(500).send("Error fetching categories");
+      } else {
+        res.json(results);
+      }
+    }
+  );
+};
+
+const questionCounting = async (req, res) => {
+  const category_id = req.query.category_id;
+  db.query(
+    "SELECT COUNT(*) AS count FROM questions WHERE category_id = ?",
+    [category_id],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching question count:", err);
+        res.status(500).send("Error fetching question count");
+      } else {
+        res.json({ count: results[0].count });
+      }
+    }
+  );
+};
+
+const testAssign = async (req, res) => {
+  const {
+    quiz_name,
+    quiz_des,
+    category_id,
+    total_no_of_question,
+    difficulty_level_id,
+    easy_pass_mark,
+    medium_pass_mark,
+  } = req.body;
+  db.query(
+    "INSERT INTO testassign (quiz_name, quiz_des, category_id, total_no_of_question, difficulty_level_id, easy_pass_mark, medium_pass_mark) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [
+      quiz_name,
+      quiz_des,
+      category_id,
+      total_no_of_question,
+      difficulty_level_id,
+      easy_pass_mark,
+      medium_pass_mark,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error assigning quiz:", err);
+        res.status(500).send("Error assigning quiz");
+      } else {
+        res.send("Quiz assigned successfully");
+      }
+    }
+  );
 };
 
 export {
@@ -377,5 +478,9 @@ export {
   getBitInfo,
   bittedInfo,
   acceptBitting,
-  addQuestion
+  addQuestion,
+  categoriesAndSub,
+  categories,
+  questionCounting,
+  testAssign
 };
